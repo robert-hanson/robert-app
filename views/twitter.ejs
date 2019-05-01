@@ -11,24 +11,46 @@
 </head>
 <body>
 
+<!-- 	<div class="container">
+	  <h2>Welcome To Dark Twitter</h2>
+	  <p>The .divider class is used to separate links inside the dropdown menu with a thin horizontal line:</p>
+	  <div class="dropdown">
+	    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Tutorials
+	    <span class="caret"></span></button>
+	    <ul class="dropdown-menu">
+	      <li><a href="#">HTML</a></li>
+	      <li><a href="#">CSS</a></li>
+	      <li><a href="#">JavaScript</a></li>
+	      <li class="divider"></li>
+	      <li><a href="#">About Us</a></li>
+	    </ul>
+	  </div>
+	</div> -->
+
+
+
 	<div class='container'>
-		<h1 class='text-center'>Twitter feed of <%= search %></h1>
+		<h1 class='text-center'>Twitter feed of something %></h1>
 
+		<table class='table table-hover'>
+			<tr>
+				<th><!-- Profile image --></th>
+				<th>Username</th>
+				<th>Screen name</th>
+				<th>text</th>
+			</tr>
 
-		<form action="/dumb" method="post">
-		  <div class="form-group">
-		    <label for="twitterUser">Get tweets</label>
-		    <input type="text" class="form-control" name='twitterUser' id="twitterUser">
-		  </div>
-<!-- 		  <div class="form-group">
-		    <label for="pwd">Password:</label>
-		    <input type="password" class="form-control" id="pwd">
-		  </div>
-		  <div class="checkbox">
-		    <label><input type="checkbox"> Remember me</label>
-		  </div> -->
-		  <button type="submit" class="btn btn-default">Submit</button>
-		</form>
+			<% for(var i=0; i < twitterData.length; i++) { %>
+			   <tr>
+			     <td><%= twitterData[i].profileImageUrl %></td>
+			     <td><%= twitterData[i].userName %></td>
+			     <td><%= twitterData[i].screenName %></td>
+			     <td><%= twitterData[i].text %></td>
+			   </tr>
+			<% } %>
+		</table>
+
+		<!-- <%= JSON.stringify(twitterData) %> -->
 	</div>
 </body>
 </html>
