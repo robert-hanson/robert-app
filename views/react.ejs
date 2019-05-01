@@ -1,0 +1,42 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title>REACT Test</title>
+	<!-- BOOTSTRAP cdn's -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><!-- Latest compiled and minified CSS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><!-- jQuery library -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script><!-- Latest compiled JavaScript -->
+
+	<!-- JSX/babel -->
+	<!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+
+	<!-- Popper JS -->
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script> -->
+
+</head>
+<body>
+
+
+	<div class='container'>
+
+		<h2><%= title %></h2>
+		<!-- React container --> 
+		<div id="like_button_container"></div>
+
+
+
+	</div>
+
+
+
+	<!-- Load React (end of page) -->
+	<!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+	<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+	<!-- Load our React component. -->
+	<script src="./views/react/like_button.js"></script>
+
+
+<body>
+</html>

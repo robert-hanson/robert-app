@@ -7,10 +7,7 @@ var T = new Twitter(config);
 //twitter archiving
 var fs = require('fs');
 var jsonxml = require('jsontoxml');
-const ARCHIVE_FILE = './archivedTweets.xml';
 
-
-console.log('does twitter.js ever get loaded?'); //TODO 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -34,7 +31,7 @@ router.post('/', function(req, res, next) {
 	  // If there is no error, proceed
 	  if(!err){
 	  	var outData = []; // custom var to play around with and render
-	  	writeTweetsToFile(data.statuses, ARCHIVE_FILE);
+	  	// writeTweetsToFile(data.statuses, ARCHIVE_FILE);
 
 	    // Loop through the returned tweets
 	    for(let i = 0; i < data.statuses.length; i++){
