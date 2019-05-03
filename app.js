@@ -4,12 +4,22 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var config = require('./config');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var twitterRouter = require('./routes/twitter');
 var reactRouter = require('./routes/react');
+var mongoRouter = require('./routes/mongo');
 
 var app = express();
+
+//Set up mongoose connection
+var mongoose = require('mongoose');
+var mongoDB = config.db.connectionString;
+mongoose.connect(mongoDB, {useNewUrlParser: true});
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,16 +37,9 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/twitter', twitterRouter);
 app.use('/react', reactRouter);
+app.use('/mongo', mongoRouter);
 
 
-
-app.use('/dumb', function(req, res, next) {
-  	res.render('dumb', {user: req.body.twitterUser});
-});
-
-app.use('/fucky', function(req,res){
-	console.log('fucky was hit');
-});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -51,11 +54,10 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  // res.render('error');
+  //TODO replace back to above
+  res.send(err);
 });
 
 
-app.use('fuck', function(req,res){
-	console.log('/fuck was reached');
-});
 module.exports = app;

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Twitter = require('twitter');
 var config = require('../config.js');
-var T = new Twitter(config);
+var T = new Twitter(config.twitterConfig);
 
 //twitter archiving
 var fs = require('fs');
@@ -11,23 +11,26 @@ var jsonxml = require('jsontoxml');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+	console.log("got to twitter get '/' router");
+	res.render('twitter', {twitterData: {}});
 });
 
-/* GET home page. */
+
+/* GET twitter initial page. */
 router.post('/', function(req, res, next) {
-	console.log('please');
+	var searchQuery = req.body.searchQuery;
+	
 	// Set up your search parameters
 	var params = {
-	  q: req.body.search,
+	  q: searchQuery,
 	  count: 100,
 	  result_type: 'recent',
 	  lang: 'en'
 	}
-	console.log('we made it to twitter route');
-	var searchStr = req.body.search;
+	console.log('search: ' +  searchQuery);
 	// Initiate your search using the above paramaters
 	T.get('search/tweets', params, function(err, data, response) {
+		console.log('do we get inside twitter logic?');
 	  // If there is no error, proceed
 	  if(!err){
 	  	var outData = []; // custom var to play around with and render
@@ -61,9 +64,10 @@ router.post('/', function(req, res, next) {
 	      //   }
 	      // });
 	    }
-  			res.render('twitter', { twitterData: outData});
+  			res.render('twitter', { twitterData: outData, searchQuery: searchQuery});
 
 	  } else {
+	  	console.log('busted...');
 	    console.log(err);
 	  }
 	});
