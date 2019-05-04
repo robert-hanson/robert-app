@@ -17,7 +17,7 @@
 		<br>
 		<p>Please create a new row</p>
 		<br>
-		<form action='/mongo/TestModel/add' method='POST'>
+		<form>
 			<div class='row'>
 				<div class="form-group col-sm-3">
 					<label for="field1">Field 1</label>
@@ -33,10 +33,11 @@
 				</div>		
 			</div>
 
-		  <button type='submit' class="btn btn-default" id='btnSubmit'>Submit</button>
+		  <button  class="btn btn-default" id='btnSubmit'>Submit</button>
+		  <button  class="btn btn-primary" id='btnBetter'>Better Button</button>
 		</form>
 
-
+		<hr/>
 		<div id='results'></div>
 
 
@@ -49,21 +50,30 @@
 
 		// Shorthand for $( document ).ready()
 		$(function() {
+			debugger;
 
-			// $('#btnSubmit').click(function(){
-			// 	var field1 = $('#field1').val();
-			// 	var field2 = $('#field2').val();
-			// 	var field3 = $('#field3').val();
-			// 	alert(`submit button was pressed with following values:\n\tField1: ${field1}\n\tField2: ${field2}\n\tField3: ${field3}`);
+			$('#btnBetter').click(function(e){
+				e.preventDefault();
+				alert('yo...you clicked the better button');
+			});
 
-			// 	$.ajax({
-			// 		url: "mongo/TestModel/add/", 
-			// 		type: "post",
-			// 		success: function(result){
-   //  					$("#results").html(result);
-  	// 				}
-  	// 			});
-			// });
+			$('#btnSubmit').click(function(e){
+				debugger;
+				e.preventDefault();
+				var field1 = $('#field1').val();
+				var field2 = $('#field2').val();
+				var field3 = $('#field3').val();
+				// alert(`submit button was pressed with following values:\n\tField1: ${field1}\n\tField2: ${field2}\n\tField3: ${field3}`);
+
+				$.ajax({
+					url: "mongo/TestModel/add/", 
+					type: "post",
+					success: function(result){
+						debugger;
+    					$("#results").text(result);
+  					}
+  				});
+			});
 
 		});
 

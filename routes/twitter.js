@@ -11,7 +11,6 @@ var jsonxml = require('jsontoxml');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	console.log("got to twitter get '/' router");
 	res.render('twitter', {twitterData: {}});
 });
 
@@ -64,7 +63,8 @@ router.post('/', function(req, res, next) {
 	      //   }
 	      // });
 	    }
-  			res.render('twitter', { twitterData: outData, searchQuery: searchQuery});
+	    	console.log('rendering twitter results...');
+  			res.render('_tweetSearchResults', {twitterData: outData});
 
 	  } else {
 	  	console.log('busted...');

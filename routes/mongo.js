@@ -26,17 +26,21 @@ router.post('/TestModel/add', function(req, res, next) {
 	console.log('creating new test model record...');
 	// add new record to collection/table
 	TestModel.create({
-		field1: field1,
-		field2: field2,
-		field3: field3
-	}, function(err, newInstance){
-		// saved!
+			field1: field1,
+			field2: field2,
+			field3: field3
+		}, function(err, newInstance){
+			// saved!
+			console.log('real error: ' + err);
+
+			console.log('searching all test model records...');
+			var results = TestModel.find().limit(100).exec(function(err, data){
+			console.log('Error: ' + JSON.stringify(err));
+	  		res.json(data);
+		});
 	});
 
-	console.log('searching all test model records...');
-	var results = TestModel.find().limit(100).exec(function(err, data){
-  		res.json(data);
-	});
+
 });
 
 
