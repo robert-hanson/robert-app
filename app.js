@@ -56,6 +56,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   // res.render('error');
   //TODO replace back to above
+  console.log(err);
   res.send(err);
 });
 

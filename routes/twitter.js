@@ -8,6 +8,7 @@ var fs = require('fs');
 // databases
 var Tweet = require('../models/Tweet');
 var TwitterUser = require('../models/TwitterUser');
+var Subscription = require('../models/Subscription');
 
 
 
@@ -18,10 +19,40 @@ router.get('/', function(req, res, next) {
 
 
 router.get('/subscriptions', function(req, res, next) {
-	var subscriptions = config.twitterSubscriptions; 
-	res.render("_tweetSubscriptions", {subscriptions: subscriptions});
+	// var subscriptions = config.twitterSubscriptions; 
+	console.log('inside subscriptions method');
+
+	Subscription.find({})
+				.populate('user')
+				.exec(function(err, subscriptions){
+					if (err)
+						console.error(err);
+					var model = subscriptions || [];
+					console.log('sub model: ' + JSON.stringify(model));
+					console.log('model length: ' + model.length);
+					// res.render("_tweetSubscriptions", {stupid: 'dumb'});
+					res.render("_twitterSubscriptions", {subscriptions: model});
+				});
 });
 
+router.post('/subscriptions/add', function(req, res, next) {
+	console.log('adding subscription...');
+	console.log('id: ' + req.body.id);
+	var userId = req.body.id; 
+	var user = TwitterUser.findOne({id_str: userId}, 'id', function(err, user){
+		console.log('user returned: '+ JSON.stringify(user));
+		var subscription = new Subscription({user: user.id});
+			subscription.save(function(err, newSubscription){
+				console.log('saving');
+				if (err)
+					return console.error(err);
+				var model = [];
+				model[0] = newSubscription;
+				res.render('_twitterSubscriptions', {subscriptions: model});
+		});
+	});
+
+});
 
 /* GET twitter initial page. */
 router.post('/search', function(req, res, next) {
@@ -37,7 +68,7 @@ router.post('/search', function(req, res, next) {
 	console.log('search: ' +  searchQuery);
 	// Initiate your search using the above paramaters
 	T.get('search/tweets', params, function(err, data, response) {
-		console.log('do we get inside twitter logic?');
+		console.log('tweets searched...');
 	  // If there is no error, proceed
 	  if(!err){
 	  	var outData = []; // custom var to play around with and render
@@ -59,10 +90,8 @@ router.post('/search', function(req, res, next) {
 	      // Get the tweet Id from the returned data
 	      let id = { id: data.statuses[i].id_str }
 	    }
-	    console.log('toArchive val: ' + req.body.toArchive);
-	    console.log('archive val: ' + req.body.archive);
-	    console.log('req.body: ' + JSON.stringify(req.body));
-	    if(req.body.toArchive)
+	    console.log('body: ' + JSON.stringify(req.body));
+	    if(req.body.toArchive == 'true') // must do it this way since nonempty string always evaluates to true
 	    {
 	    	// if checking by user, save user to our db 
 	    	if (req.body.searchQuery.startsWith('from:'))
@@ -78,61 +107,31 @@ router.post('/search', function(req, res, next) {
 	    			else if (newUser)
 	    			{
 		    			console.log('User exists.');
-		    			console.log('Formatting tweets....');
-	    				for (let i = 0; i < data.statuses.length; i++)
-		    			{
-		    				formattedTweets[i] = formatTweet(data.statuses[i], newUser);
-		    			}
-
-		    			console.log('archving tweets....');
-		    			// save multiple documents to the collection referenced by Book Model
-					    Tweet.insertMany(formattedTweets, function (err, docs) {
-					      if (err){ 
-					          return console.error(err);
-					      } else {
-					        console.log("Multiple documents inserted to Tweets");
-				  			res.render('_tweetSearchResults', {twitterData: outData});
-					      }
-				    	});
+		    			formattedTweets = getFormattedTweets(data.statuses, newUser);
+		    			archiveAndDisplayTweets(formattedTweets, {twitterData: outData}, res);
 	    			}
 	    			else
 	    			{
 	    				console.log('user not found. adding to database....')
 	    				var newTwitterUser = new TwitterUser(data.statuses[0].user);
 	    				newTwitterUser.save(function(err, newUser){
-	    					if(err)
-	    					{
+	    					if(err) {
 	    						console.error(err);
 	    					}
-
-	    					console.log('user saved....formatting tweet...');
-	    					for (let i = 0; i < data.statuses.length; i++)
-			    			{
-			    				formattedTweets[i] = formatTweet(data.statuses[i], newUser);
-			    			}
-
-		    				console.log('archving tweets....');
-			    			// save multiple documents to the collection referenced by Book Model
-						    Tweet.insertMany(formattedTweets, function (err, docs) {
-						      if (err){ 
-						          return console.error(err);
-						      } else {
-						        console.log("Multiple documents inserted to Tweets");
-					  			res.render('_tweetSearchResults', {twitterData: outData});
-						      }
-						    });
-
-
+	    					console.log('user saved.');
+		    				formattedTweets = getFormattedTweets(data.statuses, newUser);
+		    				archiveAndDisplayTweets(formattedTweets, {twitterData: outData}, res);
 	    				});
 	    			}
 
 	    		});
 	    	} else {
-	    		console.log('rendering without saving...');
+	    		console.log('Non user specific search results will not be archived...');
 			  	res.render('_tweetSearchResults', {twitterData: outData});
 	    	}
 	    }
 	    else {
+	    	console.log('rendering without archiving...');
   			res.render('_tweetSearchResults', {twitterData: outData});
 	    }
 
@@ -157,7 +156,29 @@ module.exports = router;
 // 	}
 // }
 
+function archiveAndDisplayTweets(tweetsToArchive, viewModel, res){
+	console.log('archving tweets....');
+	// save multiple documents to the collection referenced by Book Model
+    Tweet.insertMany(tweetsToArchive, function (err, docs) {
+		if (err){ 
+			console.error(err);
+		} else {
+			console.log("Multiple documents inserted to Tweets");
+		}
+		res.render('_tweetSearchResults', viewModel);
+	});
+}
 
+function getFormattedTweets(rawTweets, user)
+{
+	var formattedTweets = [];
+	console.log('Formatting tweets....');
+	for (let i = 0; i < rawTweets.length; i++)
+	{
+		formattedTweets[i] = formatTweet(rawTweets[i], user);
+	}
+	return formattedTweets;
+}
 
 function formatTweet(rawTweet, user){
 	var formattedTweet = {
@@ -175,7 +196,6 @@ function formatTweet(rawTweet, user){
 	};
 	return formattedTweet
 }
-
 
 
 
