@@ -20,7 +20,8 @@ exports.twitterConfig = {
 	access_token_secret: '2Vnzc4osLVw0XeVKYbrN734Xqhh7h5WIVy3kp74zUpbTC'
 };
 
-
+// list of twitter accounts to subscribe to 
+exports.twitterSubscriptions = process.env.TWITTER_SUBSCRIPTIONS || [];
 
 exports.db = {
 	connectionString: "mongodb+srv://dbUser:TGh340tyy5V9@cluster0-jsmxc.mongodb.net/app_db?retryWrites=true"
