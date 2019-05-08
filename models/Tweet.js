@@ -18,8 +18,18 @@ var TweetSchema = new Schema({
 	in_reply_to_screen_name: String,
 	// user stuff,
 	user: { 
-		type: Schema.Types.ObjectId, 
-		ref: 'TwitterUser' 
+			id_str: String,
+			name: String,
+			screen_name: String,
+			location: String,
+			url: String,
+			description: String,
+			protected: Boolean,
+			verified: Boolean,
+			created_at: String,
+			profile_banner_url: String,
+			profile_image_url_https: String
+
 	},
 	quoted_status_id_str: String,
 	is_quote_status: String
@@ -27,7 +37,7 @@ var TweetSchema = new Schema({
 });
 
 // Compile model from schema
-var TweetModel = mongoose.model('Tweet', TweetSchema);
+var TweetModel = mongoose.model('Tweet2', TweetSchema);
 
 
 module.exports = TweetModel;

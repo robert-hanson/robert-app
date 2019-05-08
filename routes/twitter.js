@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Twitter = require('twitter');
 var config = require('../config.js');
-var T = new Twitter(config.twitterConfig);
+var Twitter = new Twitter(config.twitterConfig);
 //twitter archiving
 var fs = require('fs');
 // databases
@@ -16,6 +16,82 @@ var Subscription = require('../models/Subscription');
 router.get('/', function(req, res, next) {
 	res.render('twitter', {twitterData: {}});
 });
+
+
+router.get('/users/:userName/tweets', function(req, res, next){
+	var userName = req.params.userName
+	var query = 'from: ' + userName;
+	var params = {
+		q: query,
+		count: 100 // 100 is max allowed. default is 15
+	};
+	console.log(`Searching tweets from User {${userName}}`);
+	Twitter.get('search/tweets', params, function(err, data, response) {
+		if (err) return console.error(err);
+		res.send(data.statuses);
+	});
+});
+
+
+router.get('/users/:userName/tweets/archive', function(req, res, next){
+	var userName = req.params.userName
+	var query = 'from: ' + userName;
+	var params = {
+		q: query,
+		count: 100 // 100 is max allowed. default is 15
+	};
+	console.log(`Searching tweets from User {${userName}}`);
+	Twitter.get('search/tweets', params, function(err, data, response) {
+		if (err) return console.error(err);
+		console.log('archving tweets...');
+		Tweet.insertMany(data.statuses, function (err, docs) {
+			console.log('done inerting');
+			if (err) return console.error(err);
+			var response = {
+				error: err,
+				tweetsFound: data.statuses.length,
+				tweetsArchived: docs.length,
+				tweets: docs
+			}
+			res.send(response);
+		});
+	});
+});
+
+
+/// TEST SHIT TO THROW AWAY
+router.get('/users/:userName/archived-tweets/max', function(req, res, next){
+	var userName = req.params.userName
+	var query = 'from: ' + userName;
+	var params = {
+		q: query,
+		count: 100 // 100 is max allowed. default is 15
+	};
+	Tweet.findOne({user: {screen_name: userName}})
+		.select('id-str')
+		.sort('-id')
+		.exec(function(err, data){
+			if(err) return console.error(err);
+			res.send(data);
+	});
+});
+
+
+router.get('/users/:userName/tweets', function(req, res, next){
+	var userName = req.params.userName
+	var query = 'from: ' + userName;
+	var params = {
+		q: query,
+		count: 100 // 100 is max allowed. default is 15
+	};
+	Twitter.get('search/tweets', params, function(err, data, response) {
+		console.log(`Searching tweets from User {${userName}}`);
+		if (err) return console.error(err);
+		res.send(data.statuses);
+	});
+});
+
+
 
 
 router.get('/subscriptions', function(req, res, next) {
@@ -67,7 +143,7 @@ router.post('/search', function(req, res, next) {
 	}
 	console.log('search: ' +  searchQuery);
 	// Initiate your search using the above paramaters
-	T.get('search/tweets', params, function(err, data, response) {
+	Twitter.get('search/tweets', params, function(err, data, response) {
 		console.log('tweets searched...');
 	  // If there is no error, proceed
 	  if(!err){
