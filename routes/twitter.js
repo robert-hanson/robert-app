@@ -19,33 +19,25 @@ router.get('/', function(req, res, next) {
 
 
 router.get('/users/:userName/tweets', function(req, res, next){
-	var userName = req.params.userName
-	var query = 'from: ' + userName;
-	var params = {
-		q: query,
-		count: 100 // 100 is max allowed. default is 15
-	};
-	console.log(`Searching tweets from User {${userName}}`);
-	Twitter.get('search/tweets', params, function(err, data, response) {
-		if (err) return console.error(err);
-		res.send(data.statuses);
+	getTweetsFromUserNameAsync(req.params.userName).then(function(tweets){
+		res.send(tweets);
+	}).catch(function(err){
+		return console.error(err);
 	});
 });
 
 
 router.get('/users/:userName/tweets/archive', function(req, res, next){
-	var userName = req.params.userName
-	var query = 'from: ' + userName;
-	var params = {
-		q: query,
-		count: 100 // 100 is max allowed. default is 15
-	};
-	console.log(`Searching tweets from User {${userName}}`);
+	getTweetsFromUserNameAsync(req.params.userName).then(function(tweets){
+
+	}).catch(function(err){
+		console.error(err)
+	});
 	Twitter.get('search/tweets', params, function(err, data, response) {
 		if (err) return console.error(err);
 		console.log('archving tweets...');
 		Tweet.insertMany(data.statuses, function (err, docs) {
-			console.log('done inerting');
+			console.log('done inserting');
 			if (err) return console.error(err);
 			var response = {
 				error: err,
@@ -62,7 +54,7 @@ router.get('/users/:userName/tweets/archive', function(req, res, next){
 /// TEST SHIT TO THROW AWAY
 router.get('/users/:userName/archived-tweets/max', function(req, res, next){
 	var userName = req.params.userName
-	var query = 'from: ' + userName;
+	var query = 'from:' + userName;
 	var params = {
 		q: query,
 		count: 100 // 100 is max allowed. default is 15
@@ -275,6 +267,41 @@ function formatTweet(rawTweet, user){
 
 
 
+function getTweetsFromUserNameAsync(userName, sinceId) {
+	return new Promise(function(resolve, reject) {
+		var query = 'from:' + userName;
+		var params = {
+			q: query,
+			since_id: sinceId,
+			count: 100 // 100 is max allowed. default is 15
+		};
+
+		console.log(`Searching tweets from User {${userName}}`);
+		Twitter.get('search/tweets', params, function(err, data, response) {
+			if (err){
+				reject(err);
+			}
+			resolve(data.statuses);
+		});
+	});
+}
+
+
+
+
+// router.get('/users/:userName/tweets', function(req, res, next){
+// 	var userName = req.params.userName
+// 	var query = 'from:' + userName;
+// 	var params = {
+// 		q: query,
+// 		count: 100 // 100 is max allowed. default is 15
+// 	};
+// 	console.log(`Searching tweets from User {${userName}}`);
+// 	Twitter.get('search/tweets', params, function(err, data, response) {
+// 		if (err) return console.error(err);
+// 		res.send(data.statuses);
+// 	});
+// });
 
 
 
