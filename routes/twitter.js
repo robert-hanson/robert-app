@@ -26,62 +26,23 @@ router.get('/users/:userName/tweets', function(req, res, next){
 	});
 });
 
-
+// Pulls latest tweets from Twitter API and archives them (duplicates are skipped)
 router.get('/users/:userName/tweets/archive', function(req, res, next){
-	getTweetsFromUserNameAsync(req.params.userName).then(function(tweets){
-
+	getTweetMaxIdFromUserNameAsync(req.params.userName)
+	  .then(function(sinceId){
+		// fetch new tweets after last one archived
+		return getTweetsFromUserNameAsync(req.params.userName, sinceId);
+	}).then(function(tweets){
+		// persist tweets to db
+		return archiveTweets(tweets);
+	}).then(function(response){
+		// send report/response
+		res.send(response);
 	}).catch(function(err){
-		console.error(err)
-	});
-	Twitter.get('search/tweets', params, function(err, data, response) {
-		if (err) return console.error(err);
-		console.log('archving tweets...');
-		Tweet.insertMany(data.statuses, function (err, docs) {
-			console.log('done inserting');
-			if (err) return console.error(err);
-			var response = {
-				error: err,
-				tweetsFound: data.statuses.length,
-				tweetsArchived: docs.length,
-				tweets: docs
-			}
-			res.send(response);
-		});
+		return console.error(err);
 	});
 });
 
-
-/// TEST SHIT TO THROW AWAY
-router.get('/users/:userName/archived-tweets/max', function(req, res, next){
-	var userName = req.params.userName
-	var query = 'from:' + userName;
-	var params = {
-		q: query,
-		count: 100 // 100 is max allowed. default is 15
-	};
-	Tweet.findOne({user: {screen_name: userName}})
-		.select('id-str')
-		.sort('-id')
-		.exec(function(err, data){
-			if(err) return console.error(err);
-			res.send(data);
-	});
-});
-
-
-router.get('/users/:userName/tweets', function(req, res, next){
-	var userName = req.params.userName
-	var query = 'from: ' + userName;
-	var params = {
-		q: query,
-		count: 100 // 100 is max allowed. default is 15
-	};
-	Twitter.get('search/tweets', params, function(err, data, response) {
-		console.log(`Searching tweets from User {${userName}}`);
-		if (err) return console.error(err);
-		res.send(data.statuses);
-	});
-});
 
 
 
@@ -268,6 +229,7 @@ function formatTweet(rawTweet, user){
 
 
 function getTweetsFromUserNameAsync(userName, sinceId) {
+	console.log(`Searching tweets from User {${userName}}`);
 	return new Promise(function(resolve, reject) {
 		var query = 'from:' + userName;
 		var params = {
@@ -275,33 +237,54 @@ function getTweetsFromUserNameAsync(userName, sinceId) {
 			since_id: sinceId,
 			count: 100 // 100 is max allowed. default is 15
 		};
-
-		console.log(`Searching tweets from User {${userName}}`);
+		console.log('query: ' + JSON.stringify(params));
 		Twitter.get('search/tweets', params, function(err, data, response) {
 			if (err){
 				reject(err);
 			}
+			// console.log(`${data.statuses.length} tweets found.`);
 			resolve(data.statuses);
 		});
 	});
 }
 
 
+function getTweetMaxIdFromUserNameAsync(userName){
+	return new Promise(function(resolve, reject){
+		console.log(`Getting max id of {${userName}}`);
+		Tweet.findOne({'user.screen_name': userName})
+			.select('id_str')
+			.sort({id_str: -1})
+			.exec(function(err, maxId){
+				console.log(`maxId found to be {${maxId.id_str}}`);
+				if(err) reject(err);
+				resolve(maxId.id_str);
+			});
+	});
+};
 
 
-// router.get('/users/:userName/tweets', function(req, res, next){
-// 	var userName = req.params.userName
-// 	var query = 'from:' + userName;
-// 	var params = {
-// 		q: query,
-// 		count: 100 // 100 is max allowed. default is 15
-// 	};
-// 	console.log(`Searching tweets from User {${userName}}`);
-// 	Twitter.get('search/tweets', params, function(err, data, response) {
-// 		if (err) return console.error(err);
-// 		res.send(data.statuses);
-// 	});
-// });
+function archiveTweets(tweets){
+	return new Promise(function(resolve, reject){
+		var tweetCount= tweets ? tweets.length : 0;
+		console.log(`archving ${tweetCount} tweets...`);
+		Tweet.insertMany(tweets, function (err, docs) {
+			var docCount= docs ? docs.length : 0;
+			console.log('docs: ' + JSON.stringify(docs));
+			if (err) reject(err);
+			var response = {
+				error: err,
+				tweetsFound: tweets.length,
+				tweetsArchived: docCount,
+				tweets: docs
+			}
+			resolve(response);
+		});
+	});
+};
+
+
+
 
 
 
