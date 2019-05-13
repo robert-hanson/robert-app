@@ -6,7 +6,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	console.log('routing to react...');
-  res.render('react', {title: 'React' });
+  res.render('react', {title: 'React test' });
 });
 
 router.get('/backend-test', (req, res) => {
