@@ -1,15 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var Twitter = require('twitter');
 var config = require('../config.js');
-var Twitter = new Twitter(config.twitterConfig);
-//twitter archiving
-var fs = require('fs');
+var Twitter = require('twitter')(config.twitterConfig);
+// var Twitter = new Twitter(config.twitterConfig);
+
 // databases
 var Tweet = require('../models/Tweet');
 var TwitterUser = require('../models/TwitterUser');
 var Subscription = require('../models/Subscription');
-
 
 
 /* GET home page. */
@@ -48,7 +46,6 @@ router.get('/users/:userName/tweets/archive', function(req, res, next){
 
 
 router.get('/subscriptions', function(req, res, next) {
-	// var subscriptions = config.twitterSubscriptions; 
 	console.log('inside subscriptions method');
 
 	Subscription.find({})
@@ -63,6 +60,8 @@ router.get('/subscriptions', function(req, res, next) {
 					res.render("_twitterSubscriptions", {subscriptions: model});
 				});
 });
+
+
 
 router.post('/subscriptions/add', function(req, res, next) {
 	console.log('adding subscription...');
@@ -242,7 +241,6 @@ function getTweetsFromUserNameAsync(userName, sinceId) {
 			if (err){
 				reject(err);
 			}
-			// console.log(`${data.statuses.length} tweets found.`);
 			resolve(data.statuses);
 		});
 	});
@@ -256,9 +254,10 @@ function getTweetMaxIdFromUserNameAsync(userName){
 			.select('id_str')
 			.sort({id_str: -1})
 			.exec(function(err, maxId){
-				console.log(`maxId found to be {${maxId.id_str}}`);
+				console.log('maxId: ' + JSON.stringify(maxId));
 				if(err) reject(err);
-				resolve(maxId.id_str);
+				var returnId = maxId ? maxId.id_str : '-1';
+				resolve(returnId);
 			});
 	});
 };
@@ -266,11 +265,9 @@ function getTweetMaxIdFromUserNameAsync(userName){
 
 function archiveTweets(tweets){
 	return new Promise(function(resolve, reject){
-		var tweetCount= tweets ? tweets.length : 0;
-		console.log(`archving ${tweetCount} tweets...`);
+		console.log(`archving ${tweets.length} tweets...`);
 		Tweet.insertMany(tweets, function (err, docs) {
 			var docCount= docs ? docs.length : 0;
-			console.log('docs: ' + JSON.stringify(docs));
 			if (err) reject(err);
 			var response = {
 				error: err,
@@ -284,19 +281,3 @@ function archiveTweets(tweets){
 };
 
 
-
-
-
-
-		    	      // Try to Favorite the selected Tweet
-	      // T.post('favorites/create', id, function(err, response){
-	      //   // If the favorite fails, log the error message
-	      //   if(err){
-	      //     console.log(err[0].message);
-	      //   }
-	      //   // If the favorite is successful, log the url of the tweet
-	      //   else{
-	      //     let username = response.user.screen_name;
-	      //     let tweetId = response.id_str;
-	      //   }
-	      // });

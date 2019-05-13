@@ -9,6 +9,11 @@ router.get('/', function(req, res, next) {
   res.render('react', {title: 'React' });
 });
 
+router.get('/backend-test', (req, res) => {
+	console.log('backend-test was hit!!');
+	res.send({express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT'});
+});
+
 
 
 module.exports = router;
