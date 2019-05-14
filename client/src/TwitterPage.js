@@ -1,51 +1,63 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {PageHeader} from './PageHeader';
-import {TwitterSearchControls} from './TwitterSearchControls';
-import {TwitterResults} from './TwitterResults';
+import {TwitterSearchPage} from './TwitterSearchPage';
+import {TwitterSubscriptionsPage} from './TwitterSubscriptionsPage';
+
 
 
 export class TwitterPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      results: ''
-    };
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     results: ''
+  //   };
 
-    this.handleSearch = this.handleSearch.bind(this);
-  }
-
-  handleSearch(formState){
+  // }
 
 
-    fetch('/twitter/search/', {
-      method: 'POST', // or 'PUT'
-      body: JSON.stringify({
-        queryString: formState.searchQuery
-      }), // data can be `string` or {object}!
-      headers:{
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(result => result.json())
-    .then(result => {
-      debugger;
-      this.setState({results: result});
-    })
-    .catch(function(err){
-      console.error(err);
-    });
-  }
 
 
 
   render() {
     return (
       <div>
-      	<PageHeader pageHeader='Twitter stuff'  pageSubHeader="sandbox to mess around with Twitter's API" />
-      	<br/>
-        <TwitterSearchControls onSearch={this.handleSearch} />
-        <TwitterResults results={this.state.results}/>
+      	{/* common header */}
+      	<PageHeader pageHeader='Title index'  pageSubHeader="sandbox to mess around with Twitter's API" />
+        
+      	{/* dynamically show content */}
+        <ul class="nav nav-tabs">
+		  <li class="nav-item">
+		    <a class="nav-link active" data-toggle="tab" href="#searchTweetsPane">Search</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" data-toggle="tab" href="#subscriptionsPane">Subscriptions</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" data-toggle="tab" href="#archivedPane">Archived</a>
+		  </li>
+		</ul>
+		<br/>
+
+		{/* Tab panes */}
+		<div class="tab-content">
+
+			{/* search tweets via Twitter APi */}
+			<div class="tab-pane container active" id="searchTweetsPane">
+				<TwitterSearchPage />
+			</div>
+
+			{/* view user subscriptions */}
+			<div class="tab-pane container fade" id="subscriptionsPane">
+			 	<TwitterSubscriptionsPage />
+			</div>
+
+			{/* search archived/saved tweets */}
+			<div class="tab-pane container fade" id="archivedPane">
+				<p>Archived tweet place holder...</p>
+			</div>
+		</div>
+
+
       </div>
     );
   }

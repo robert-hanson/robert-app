@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import {TwitterSearchBar} from './TwitterSearchBar';
 
 export class TwitterSearchControls extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      searchQuery: ''
+      searchQuery: '',
+      searchByOption: "user"
     };
 
     this.handleSearchQueryChange = this.handleSearchQueryChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
   handleSearchQueryChange(event) {
@@ -23,22 +25,52 @@ export class TwitterSearchControls extends React.Component {
     this.props.onSearch(this.state);
   }
 
+  handleOptionChange(e){
+    this.setState({
+      searchByOption: e.target.value
+    });
+  }
+
   render() {
 
     // Display a "Like" <button>
     return (
       <div>
-        <div className="form-group">
-          <label htmlFor="search">Search</label>
-          <input type="text" className="form-control" name='searchQuery' value={this.state.searchQuery} onChange={this.handleSearchQueryChange}/>
+        <div className='form-check-inline col-sm-12'>
+          <label htmlFor="search">Search by:</label>
+          <div className='form-check'>
+            <label className="form-check-label">
+              <input 
+                type="radio" 
+                name="optradio"
+                value="user"
+                checked={this.state.searchByOption === "user"} 
+                onChange={this.handleOptionChange}
+                className="form-check-input"
+              />
+              Username
+            </label>
+          </div>
+          <div className='form-check'>
+            <label className='form-check-label'>
+              <input 
+                type="radio" 
+                name="optradio" 
+                value="text"
+                checked={this.state.searchByOption === "text"} 
+                onChange={this.handleOptionChange}
+                className="form-check-input"
+              />
+              Text
+            </label>
+          </div>
         </div>
-
-        <div className="checkbox text-right">
-          <label><input id='archive' name='toArchive' type="checkbox" value='true'/>Archive Results</label>
-        </div>
-        <button className="btn btn-primary" onClick={this.handleSearch} >Search</button>
-        <button className="btn btn-link" >View Subscriptions</button>
-      </div>
+        <TwitterSearchBar 
+          searchBy={this.state.searchByOption} 
+          onChange={this.handleSearchQueryChange} 
+          onSearch={this.handleSearch}
+        />
+    </div>
     );
   }
 }

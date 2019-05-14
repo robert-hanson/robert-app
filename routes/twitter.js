@@ -44,6 +44,11 @@ router.get('/users/:userName/tweets/archive', function(req, res, next){
 
 router.post('/search', function(req,res) {
 	var searchQuery = req.body.queryString;
+	var searchBy = req.body.searchBy; // 'user' or 'text'
+	if (searchBy == 'user'){
+		searchQuery = 'from:' + searchQuery;
+	}
+	// var returnCount = req.body.count;
 	
 	// Set up your search parameters
 	var params = {
@@ -61,18 +66,13 @@ router.post('/search', function(req,res) {
 
 
 router.get('/subscriptions', function(req, res, next) {
-	console.log('inside subscriptions method');
+	console.log('Fetching twitter user subscriptions...');
 
 	Subscription.find({})
 				.populate('user')
 				.exec(function(err, subscriptions){
-					if (err)
-						console.error(err);
-					var model = subscriptions || [];
-					console.log('sub model: ' + JSON.stringify(model));
-					console.log('model length: ' + model.length);
-					// res.render("_tweetSubscriptions", {stupid: 'dumb'});
-					res.render("_twitterSubscriptions", {subscriptions: model});
+					if (err) return console.error(err);
+					res.send(subscriptions);
 				});
 });
 
