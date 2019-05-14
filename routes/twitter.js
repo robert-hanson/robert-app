@@ -42,7 +42,22 @@ router.get('/users/:userName/tweets/archive', function(req, res, next){
 });
 
 
-
+router.post('/search', function(req,res) {
+	var searchQuery = req.body.queryString;
+	
+	// Set up your search parameters
+	var params = {
+	  q: searchQuery,
+	  count: 100,
+	  result_type: 'recent',
+	  lang: 'en'
+	}
+	console.log('search: ' +  searchQuery);
+	// Initiate your search using the above paramaters
+	Twitter.get('search/tweets', params, function(err, data, response) {
+		res.send(data.statuses);
+	});
+});
 
 
 router.get('/subscriptions', function(req, res, next) {

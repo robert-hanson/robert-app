@@ -28,16 +28,16 @@ export class TwitterSearchControls extends React.Component {
     // Display a "Like" <button>
     return (
       <div>
-        <div class="form-group">
-          <label for="search">Search</label>
-          <input type="text" class="form-control" name='searchQuery' value={this.state.searchQuery} onChange={this.handleSearchQueryChange}/>
+        <div className="form-group">
+          <label htmlFor="search">Search</label>
+          <input type="text" className="form-control" name='searchQuery' value={this.state.searchQuery} onChange={this.handleSearchQueryChange}/>
         </div>
 
-        <div class="checkbox text-right">
+        <div className="checkbox text-right">
           <label><input id='archive' name='toArchive' type="checkbox" value='true'/>Archive Results</label>
         </div>
-        <button class="btn btn-primary" onClick={this.handleSearch} >Search</button>
-        <button class="btn btn-link" >View Subscriptions</button>
+        <button className="btn btn-primary" onClick={this.handleSearch} >Search</button>
+        <button className="btn btn-link" >View Subscriptions</button>
       </div>
     );
   }

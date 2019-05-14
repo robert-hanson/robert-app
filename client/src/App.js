@@ -17,7 +17,6 @@ class App extends Component {
   };
 
   callBackendAPI = async() => {
-    debugger;
     const response = await fetch('/react/backend-test');
     console.log('response: ' + response);
     const body = await response.json();
