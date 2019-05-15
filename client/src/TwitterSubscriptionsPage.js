@@ -1,4 +1,5 @@
 import React from 'react';
+import {SyncButton} from './buttons/SyncButton';
 
 export class TwitterSubscriptionsPage extends React.Component {
   constructor(props) {
@@ -26,36 +27,84 @@ export class TwitterSubscriptionsPage extends React.Component {
     const response = await fetch('/twitter/subscriptions');
     const body = await response.json();
 
+
+
     if (response.status !== 200) {
-      throw Error(body.message) 
+      throw Error(body.message); 
     }
     return body;
   };
 
   handleScreenNameChange(e) {
-    debugger;
     this.setState({
       screen_name: e.target.value
     })
   };
 
-  handleAddButtonClick = async(e) => {
-    const url = `/twitter/subscriptions/user/${this.state.screen_name}`;
-    const response = await fetch(url, {});
+  handleUnsubscribeClick(screenName) {
+    const unsubscribeFromUser = async(e) =>{
+      const url = `/twitter/subscriptions/user/${screenName}`;
+      const response = await fetch(url, 
+      {
+        method:'delete'
+      });
+      const errorList = await response.json();
+      if (errorList.length > 0){
+        alert('There was a problem. User could not be unsubscribed from')
+      }else{
+            this.loadSubscriptions()
+            .then(subscriptions => this.setState({subscriptions: subscriptions}))
+            .catch(err => console.error(err));
+      }
+    }
+    return unsubscribeFromUser;
+  };
+
+  handleSyncClick = async(e) => {
+    const url = '/twitter/subscriptions/user';
+    const response = await fetch(url, 
+    {
+      method:'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({screen_name: this.state.screen_name})
+    });
     const body = await response.json();
 
     if (body.error) {
-      this.setState({errorMessage: 'Something went wrong. User was not subscribed to.'});
+      alert(JSON.stringify(body.error));
+    }
+  }
+
+  handleAddButtonClick = async(e) => {
+    const url = '/twitter/subscriptions/user';
+    const response = await fetch(url, 
+    {
+      method:'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({screen_name: this.state.screen_name})
+    });
+    const body = await response.json();
+
+    if (body.error) {
+      // pass a function to map
+      alert(JSON.stringify(body.error));
+      const errMsgs = body.error.map(x => <p>{x.message}</p>);
+
+      this.setState({errorMessage: errMsgs});
     } else if(body.previouslySubscribed){
       this.setState({errorMessage: 'User is already subscribed to'});
     } else {
-      alert('User was successfully subscribed to.');
-
+      alert(`Successfully subscibed to ${body.user.screen_name}!`);
       this.setState({
-        subscriptions: this.state.subscriptions.push(body.user)
-      });
+        screenName: ''
+      });   
     }
+
+    this.loadSubscriptions()
+      .then(subscriptions => this.setState({subscriptions: subscriptions}))
+      .catch(err => console.error(err));
   };
+
 
   render() {
     var tableRows = [];
@@ -63,7 +112,8 @@ export class TwitterSubscriptionsPage extends React.Component {
       <tr key={s.user.screen_name}>
         <td>{s.user.screen_name}</td>
         <td>{s.user.description}</td>
-        <td><button className='btn btn-link'>Delete</button></td>
+        <td><SyncButton user={s.user} onClick={this.handleSyncClick}/></td>
+        <td><button className='btn btn-link' onClick={this.handleUnsubscribeClick(s.user.screen_name)}>Unsubscribe</button></td>
       </tr>
       );
 
@@ -94,6 +144,7 @@ export class TwitterSubscriptionsPage extends React.Component {
               <th>Screen Name</th>
               <th>Description</th>
               <th>{/* place holder for delete button */}</th>
+              <th>{/* place holder for sync button */}</th>
             </tr>
           </thead>
           <tbody>
