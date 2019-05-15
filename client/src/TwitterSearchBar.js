@@ -16,8 +16,8 @@ export class TwitterSearchBar extends React.Component {
     				aria-describedby="basic-addon1" 
     				onChange={this.props.onChange}
     			/>
-    			<div class="input-group-append">
-					<button class="btn btn-primary" onClick={this.props.onSearch}>Search</button> 
+    			<div className="input-group-append">
+					<button className="btn btn-primary" onClick={this.props.onSearch}>Search</button> 
 				</div>
 			</div>
 		);

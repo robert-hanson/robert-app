@@ -41,6 +41,16 @@ router.get('/users/:userName/tweets/archive', function(req, res, next){
 	});
 });
 
+router.get('/users/:userName', function(req,res){
+	getUserFromScreenName(req.params.userName)
+	.then(function(user){
+		res.json(user);
+	})
+	.catch(function(err){
+		return console.error(err);
+	});
+});
+
 
 router.post('/search', function(req,res) {
 	var searchQuery = req.body.queryString;
@@ -69,7 +79,7 @@ router.get('/subscriptions', function(req, res, next) {
 	console.log('Fetching twitter user subscriptions...');
 
 	Subscription.find({})
-				.populate('user')
+				// .populate('user')
 				.exec(function(err, subscriptions){
 					if (err) return console.error(err);
 					res.send(subscriptions);
@@ -77,25 +87,21 @@ router.get('/subscriptions', function(req, res, next) {
 });
 
 
-
-router.post('/subscriptions/add', function(req, res, next) {
-	console.log('adding subscription...');
-	console.log('id: ' + req.body.id);
-	var userId = req.body.id; 
-	var user = TwitterUser.findOne({id_str: userId}, 'id', function(err, user){
-		console.log('user returned: '+ JSON.stringify(user));
-		var subscription = new Subscription({user: user.id});
-			subscription.save(function(err, newSubscription){
-				console.log('saving');
-				if (err)
-					return console.error(err);
-				var model = [];
-				model[0] = newSubscription;
-				res.render('_twitterSubscriptions', {subscriptions: model});
+router.post('/subscriptions/user/:userName', function(req,res){
+	subscribeToUser(req.params.userName)
+	.then(function(response){
+		res.json(response);
+	})
+	.catch(function(err){
+		console.error(err);
+		res.json({
+			error: err
 		});
 	});
-
 });
+
+
+
 
 /* GET twitter initial page. */
 router.post('/search', function(req, res, next) {
@@ -249,7 +255,8 @@ function getTweetsFromUserNameAsync(userName, sinceId) {
 		var params = {
 			q: query,
 			since_id: sinceId,
-			count: 100 // 100 is max allowed. default is 15
+			count: 100, // 100 is max allowed. default is 15
+			tweet_mode: 'extended'
 		};
 		console.log('query: ' + JSON.stringify(params));
 		Twitter.get('search/tweets', params, function(err, data, response) {
@@ -294,5 +301,65 @@ function archiveTweets(tweets){
 		});
 	});
 };
+
+function getUserFromScreenName(screenName){
+	return new Promise(function(resolve, reject){
+		console.log(`Search Twitter for user {${screenName}}...`);
+		var params = {
+			screen_name: screenName
+		};
+		Twitter.get('users/show', params, function(err, user, res){
+			if (err) reject(err);
+			resolve(user);
+		});
+	});
+};
+
+
+function getSubscribedUser(screenName){
+	return new Promise(function(resolve, reject){
+		console.log(`Searching subscriptions for user with id: ${screenName}`)
+		Subscription.findOne({'user.screen_name': screenName}, function(err, user){
+			if (err) reject(err);
+			console.log( user ? 'user is already subscribed to' : 'user is not subscribed to');
+			resolve(user)
+		});
+	});
+};
+
+
+
+
+function subscribeToUser(screenName){
+	let response = {};
+	return new Promise(function(resolve, reject){
+		getSubscribedUser(screenName) // search for user in subscriptions 
+		.then(function(subscribedUser){
+			if (subscribedUser){ // user already subscribed. no more to do
+				resolve({
+					previouslySubscribed: true
+				});
+			} else { // search for user on Twitter
+				getUserFromScreenName(screenName)
+				.then(function(user){ 
+					// save user to subscriptions
+					var newSubscription = new Subscription({user: user});
+					newSubscription.save(function(err, user){
+						if (err) reject(err);
+						resolve({
+							user: user
+						});
+					});
+				})
+				.catch(function(err){
+					reject(err);
+				});
+			}
+		}).catch(function(err){
+			reject(err);
+		});
+	});
+};
+
 
 

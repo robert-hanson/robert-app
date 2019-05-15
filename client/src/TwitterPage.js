@@ -25,34 +25,34 @@ export class TwitterPage extends React.Component {
       	<PageHeader pageHeader='Title index'  pageSubHeader="sandbox to mess around with Twitter's API" />
         
       	{/* dynamically show content */}
-        <ul class="nav nav-tabs">
-		  <li class="nav-item">
-		    <a class="nav-link active" data-toggle="tab" href="#searchTweetsPane">Search</a>
+        <ul className="nav nav-tabs">
+		  <li className="nav-item">
+		    <a className="nav-link active" data-toggle="tab" href="#searchTweetsPane">Search</a>
 		  </li>
-		  <li class="nav-item">
-		    <a class="nav-link" data-toggle="tab" href="#subscriptionsPane">Subscriptions</a>
+		  <li className="nav-item">
+		    <a className="nav-link" data-toggle="tab" href="#subscriptionsPane">Subscriptions</a>
 		  </li>
-		  <li class="nav-item">
-		    <a class="nav-link" data-toggle="tab" href="#archivedPane">Archived</a>
+		  <li className="nav-item">
+		    <a className="nav-link" data-toggle="tab" href="#archivedPane">Archived</a>
 		  </li>
 		</ul>
 		<br/>
 
 		{/* Tab panes */}
-		<div class="tab-content">
+		<div className="tab-content">
 
 			{/* search tweets via Twitter APi */}
-			<div class="tab-pane container active" id="searchTweetsPane">
+			<div className="tab-pane container active" id="searchTweetsPane">
 				<TwitterSearchPage />
 			</div>
 
 			{/* view user subscriptions */}
-			<div class="tab-pane container fade" id="subscriptionsPane">
+			<div className="tab-pane container fade" id="subscriptionsPane">
 			 	<TwitterSubscriptionsPage />
 			</div>
 
 			{/* search archived/saved tweets */}
-			<div class="tab-pane container fade" id="archivedPane">
+			<div className="tab-pane container fade" id="archivedPane">
 				<p>Archived tweet place holder...</p>
 			</div>
 		</div>

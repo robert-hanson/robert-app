@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {TwitterSearchBar} from './TwitterSearchBar';
 
 export class TwitterSearchControls extends React.Component {
@@ -76,10 +75,3 @@ export class TwitterSearchControls extends React.Component {
 }
 
 
-
-console.log('we in here?');
-
-ReactDOM.render(
-  <TwitterSearchControls/>,
-  document.getElementById('root')
-);
