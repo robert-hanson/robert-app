@@ -26,13 +26,29 @@ export class SyncButton extends React.Component {
 	    return body.isInSync;
 	};
 
+	handleSyncClick = async(e) => {
+	    const url = `/twitter/users/${this.props.user.screen_name}/tweets/archive`;
+	    const response = await fetch(url, 
+	    {
+	      method:'post',
+	      headers: {'Content-Type': 'application/json'},
+	    });
+	    const body = await response.json();
+
+	    if (body.error) {
+	      alert(JSON.stringify(body.error));
+	    }else{
+	    	this.setState({inSync: true});
+	    }
+	}
+
 	render(){
 		debugger;
 		if (this.state.inSync === true)
 		{
 			return (<button className='btn btn-secondary' disabled>Sync</button>);
 		} else {
-			return (<button className='btn btn-secondary' onClick={this.props.onClick}>Sync</button>);
+			return (<button className='btn btn-secondary' onClick={this.handleSyncClick}>Sync</button>);
 		}
 	};
 }

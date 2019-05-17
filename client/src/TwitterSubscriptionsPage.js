@@ -60,20 +60,6 @@ export class TwitterSubscriptionsPage extends React.Component {
     return unsubscribeFromUser;
   };
 
-  handleSyncClick = async(e) => {
-    const url = '/twitter/subscriptions/user';
-    const response = await fetch(url, 
-    {
-      method:'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({screen_name: this.state.screen_name})
-    });
-    const body = await response.json();
-
-    if (body.error) {
-      alert(JSON.stringify(body.error));
-    }
-  }
 
   handleAddButtonClick = async(e) => {
     const url = '/twitter/subscriptions/user';
@@ -84,20 +70,19 @@ export class TwitterSubscriptionsPage extends React.Component {
       body: JSON.stringify({screen_name: this.state.screen_name})
     });
     const body = await response.json();
-
+debugger;
     if (body.error) {
       // pass a function to map
-      alert(JSON.stringify(body.error));
       const errMsgs = body.error.map(x => <p>{x.message}</p>);
 
       this.setState({errorMessage: errMsgs});
-    } else if(body.previouslySubscribed){
-      this.setState({errorMessage: 'User is already subscribed to'});
+    } else if(body.previouslySubscribed === true){
+        this.setState({errorMessage: 'User is already subscribed to'});
     } else {
-      alert(`Successfully subscibed to ${body.user.screen_name}!`);
-      this.setState({
-        screenName: ''
-      });   
+        alert(`Successfully subscibed to ${body.user.screen_name}!`);
+        this.setState({
+          screenName: ''
+        });   
     }
 
     this.loadSubscriptions()
@@ -112,7 +97,7 @@ export class TwitterSubscriptionsPage extends React.Component {
       <tr key={s.user.screen_name}>
         <td>{s.user.screen_name}</td>
         <td>{s.user.description}</td>
-        <td><SyncButton user={s.user} onClick={this.handleSyncClick}/></td>
+        <td><SyncButton user={s.user}/></td>
         <td><button className='btn btn-link' onClick={this.handleUnsubscribeClick(s.user.screen_name)}>Unsubscribe</button></td>
       </tr>
       );

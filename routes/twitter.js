@@ -93,18 +93,19 @@ router.get('/subscriptions', function(req, res, next) {
 });
 
 
-router.post('/subscriptions/user', function(req,res){
-	console.log('req body: ' + JSON.stringify(req.body));
-	subscribeToUser(req.body.screen_name)
-	.then(function(response){
+router.post('/subscriptions/user', async(req,res) => {
+	try {
+		const response = await subscribeToUser(req.body.screen_name);
+		console.log(JSON.stringify(response));
+
 		res.json(response);
-	})
-	.catch(function(err){
+	}
+	catch(err) {
 		console.error(err);
 		res.json({
 			error: err
 		});
-	});
+	}
 });
 
 router.delete('/subscriptions/user/:userName', function(req,res){
@@ -259,35 +260,32 @@ function getSubscribedUser(screenName){
 };
 
 
-function subscribeToUser(screenName){
+async function subscribeToUser(screenName){
 	let response = {};
-	return new Promise(function(resolve, reject){
-		getUserFromScreenName(screenName)
-		.then(function(user){
-			getSubscribedUser(user.screen_name) // string matchs seem to be case senstive in mongo so need to use actual value stored in twitter (not user passed) 
-			.then(function(subscribedUser){
-				if (subscribedUser){ // user already subscribed. no more to do
-					resolve({
-						previouslySubscribed: true
-					});
-				} else { 
-					// save user to subscriptions
-					var newSubscription = new Subscription({user: user});
-					newSubscription.save(function(err, user){
-						resolve({
-							user: user
-						});
-					});
-				}
-			}).catch(function(err){
-				reject(err);
-			});
-		}) 
-		.catch(function(err){
-			reject(err);
+	// first get user object from twitter api (mongoose search is case sensitive so we need the exact username handle)
+	const user = await getUserFromScreenName(screenName);
+	const subscribedUser = await getSubscribedUser(user.screen_name);
+	if (subscribedUser) {
+		response = {
+			user: user,
+			previouslySubscribed: true
+		};
+		console.log('response: ' + response);
+		return response;
+	}else {
+		// save user to subscriptions
+		var newSubscription = new Subscription({user: user});
+		newSubscription.save(function(err, newSub){
+			response = {
+				user: user,
+				previouslySubscribed: false
+			};
+			console.log('response: ' + JSON.stringify(response));
+			return response;
 		});
-	});
-}
+	}
+};
+
 
 
 
