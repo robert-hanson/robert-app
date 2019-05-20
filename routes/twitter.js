@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var config = require('../config.js');
 var Twitter = require('twitter')(config.twitterConfig);
+var Logger = require('../Logger.js');
 
 // databases
 var Tweet = require('../models/Tweet');
@@ -25,7 +26,7 @@ router.get('/users/:userName/tweets', function(req, res, next){
 	getTweetsFromUserNameAsync(req.params.userName).then(function(tweets){
 		res.send(tweets);
 	}).catch(function(err){
-		return console.error(err);
+		return Logger.error(err);
 	});
 });
 
@@ -42,7 +43,7 @@ router.post('/users/:userName/tweets/archive', function(req, res, next){
 		// send report/response
 		res.send(response);
 	}).catch(function(err){
-		return console.error(err);
+		return Logger.error(err);
 	});
 });
 
@@ -52,7 +53,7 @@ router.get('/users/:userName', function(req,res){
 		res.json(user);
 	})
 	.catch(function(err){
-		console.error(err);
+		Logger.error(err);
 		res.json(err);
 	});
 });
@@ -62,32 +63,38 @@ router.post('/search', function(req,res) {
 	var searchQuery = req.body.queryString;
 	var searchBy = req.body.searchBy; // 'user' or 'text'
 	if (searchBy == 'user'){
-		searchQuery = 'from:' + searchQuery;
+	getTweetsFromUserNameAsync(searchQuery).then(function(tweets){
+		res.send(tweets);
+	}).catch(function(err){
+		return Logger.error(err);
+	});
+	}
+	else {
+		// Set up your search parameters
+		var params = {
+		  q: searchQuery,
+		  count: 100,
+		  result_type: 'recent',
+		  lang: 'en'
+		}
+		Logger.log('search: ' +  searchQuery);
+		// Initiate your search using the above paramaters
+		Twitter.get('search/tweets', params, function(err, data, response) {
+			res.send(data.statuses);
+		});
 	}
 	// var returnCount = req.body.count;
-	
-	// Set up your search parameters
-	var params = {
-	  q: searchQuery,
-	  count: 100,
-	  result_type: 'recent',
-	  lang: 'en'
-	}
-	console.log('search: ' +  searchQuery);
-	// Initiate your search using the above paramaters
-	Twitter.get('search/tweets', params, function(err, data, response) {
-		res.send(data.statuses);
-	});
+
 });
 
 
 router.get('/subscriptions', function(req, res, next) {
-	console.log('Fetching twitter user subscriptions...');
+	Logger.log('Fetching twitter user subscriptions...');
 
 	Subscription.find({})
 				// .populate('user')
 				.exec(function(err, subscriptions){
-					if (err) return console.error(err);
+					if (err) return Logger.error(err);
 					res.send(subscriptions);
 				});
 });
@@ -96,12 +103,10 @@ router.get('/subscriptions', function(req, res, next) {
 router.post('/subscriptions/user', async(req,res) => {
 	try {
 		const response = await subscribeToUser(req.body.screen_name);
-		console.log(JSON.stringify(response));
-
 		res.json(response);
 	}
 	catch(err) {
-		console.error(err);
+		Logger.error(err);
 		res.json({
 			error: err
 		});
@@ -114,7 +119,7 @@ router.delete('/subscriptions/user/:userName', function(req,res){
 		res.json(responseArray);
 	})
 	.catch(function(errorArray){
-		console.error(errorArray);
+		Logger.error(errorArray);
 		res.json(error);
 	});
 });
@@ -129,6 +134,19 @@ router.get('/subscriptions/user/:userName/isInSync',async(req,res) => {
 	}
 });
 
+
+
+// router.get('/users/:userName/maxId', async(req,res) => {
+// 	Logger.log(`getting maxId for ${req.params.userName}`);
+// 	try {
+// 		var maxId = await getTweetMaxIdFromUserNameAsync(req.params.userName);
+// 		res.json(maxId);
+// 	} catch(err){
+// 		Logger.error(err);
+// 		res.json(err);
+// 	}
+// });
+
 module.exports = router;
 
 
@@ -138,13 +156,13 @@ module.exports = router;
 /**********************************************************************/
 
 function archiveAndDisplayTweets(tweetsToArchive, viewModel, res){
-	console.log('archving tweets....');
+	Logger.log('archving tweets....');
 	// save multiple documents to the collection referenced by Book Model
     Tweet.insertMany(tweetsToArchive, function (err, docs) {
 		if (err){ 
-			console.error(err);
+			Logger.error(err);
 		} else {
-			console.log("Multiple documents inserted to Tweets");
+			Logger.log("Multiple documents inserted to Tweets");
 		}
 		res.render('_tweetSearchResults', viewModel);
 	});
@@ -153,7 +171,7 @@ function archiveAndDisplayTweets(tweetsToArchive, viewModel, res){
 function getFormattedTweets(rawTweets, user)
 {
 	var formattedTweets = [];
-	console.log('Formatting tweets....');
+	Logger.log('Formatting tweets....');
 	for (let i = 0; i < rawTweets.length; i++)
 	{
 		formattedTweets[i] = formatTweet(rawTweets[i], user);
@@ -180,22 +198,25 @@ function formatTweet(rawTweet, user){
 
 
 
-function getTweetsFromUserNameAsync(userName, sinceId) {
-	console.log(`Searching tweets from User {${userName}}`);
+function getTweetsFromUserNameAsync(userName, sinceId, maxId) {
+	Logger.log(`Searching tweets from User {${userName}}`);
 	return new Promise(function(resolve, reject) {
-		var query = 'from:' + userName;
 		var params = {
-			q: query,
-			since_id: sinceId,
-			count: 100, // 100 is max allowed. default is 15
-			tweet_mode: 'extended'
+			screen_name: userName,
+			count: 200, // 200 is max allowed. default is 15
+			// trim_user: 1,           // When set to either true , t or 1 , each Tweet returned in a timeline will include a user object including only the status authors numerical ID. Omit this parameter to receive the complete user object.
+			tweet_mode: 'extended',
+			include_rts: 1
 		};
-		console.log('query: ' + JSON.stringify(params));
-		Twitter.get('search/tweets', params, function(err, data, response) {
+		if(sinceId) params.since_id = sinceId;
+		if(maxId) params.max_id = maxId;
+
+		Logger.log('query: ' + JSON.stringify(params));
+		Twitter.get('statuses/user_timeline', params, function(err, tweets, response) {
 			if (err){
 				reject(err);
 			}
-			resolve(data.statuses);
+			resolve(tweets);
 		});
 	});
 }
@@ -203,14 +224,15 @@ function getTweetsFromUserNameAsync(userName, sinceId) {
 
 function getTweetMaxIdFromUserNameAsync(userName){
 	return new Promise(function(resolve, reject){
-		console.log(`Getting max id of {${userName}}`);
+		Logger.log(`Getting max id of {${userName}}`);
 		Tweet.findOne({'user.screen_name': userName})
 			.select('id_str')
 			.sort({id_str: -1})
+			.collation({locale: "en_US", numericOrdering: true})
 			.exec(function(err, maxId){
-				console.log('maxId: ' + JSON.stringify(maxId));
+				Logger.log('maxId: ' + JSON.stringify(maxId));
 				if(err) reject(err);
-				var returnId = maxId ? maxId.id_str : '-1';
+				 var returnId = maxId ? maxId.id_str : maxId;
 				resolve(returnId);
 			});
 	});
@@ -219,7 +241,7 @@ function getTweetMaxIdFromUserNameAsync(userName){
 
 function archiveTweets(tweets){
 	return new Promise(function(resolve, reject){
-		console.log(`archving ${tweets.length} tweets...`);
+		Logger.log(`archiving ${tweets.length} tweets...`);
 		Tweet.insertMany(tweets, function (err, docs) {
 			var docCount= docs ? docs.length : 0;
 			if (err) reject(err);
@@ -236,7 +258,7 @@ function archiveTweets(tweets){
 
 function getUserFromScreenName(screenName){
 	return new Promise(function(resolve, reject){
-		console.log(`Search Twitter for user {${screenName}}...`);
+		Logger.log(`Search Twitter for user {${screenName}}...`);
 		var params = {
 			screen_name: screenName
 		};
@@ -250,10 +272,10 @@ function getUserFromScreenName(screenName){
 
 function getSubscribedUser(screenName){
 	return new Promise(function(resolve, reject){
-		console.log(`Searching subscriptions for user with id: ${screenName}`)
+		Logger.log(`Searching subscriptions for user with id: ${screenName}`)
 		Subscription.findOne({'user.screen_name': screenName}, function(err, user){
 			if (err) reject(err);
-			console.log( user ? 'user is already subscribed to' : 'user is not subscribed to');
+			Logger.log( user ? 'user is already subscribed to' : 'user is not subscribed to');
 			resolve(user)
 		});
 	});
@@ -270,7 +292,7 @@ async function subscribeToUser(screenName){
 			user: user,
 			previouslySubscribed: true
 		};
-		console.log('response: ' + response);
+		Logger.log('response: ' + response);
 		return response;
 	}else {
 		// save user to subscriptions
@@ -280,7 +302,7 @@ async function subscribeToUser(screenName){
 				user: user,
 				previouslySubscribed: false
 			};
-			console.log('response: ' + JSON.stringify(response));
+			Logger.log('response: ' + JSON.stringify(response));
 			return response;
 		});
 	}

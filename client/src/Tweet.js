@@ -12,7 +12,7 @@ export class Tweet extends React.Component {
 					<div className='text-center'>{this.props.status.user.screen_name}</div>
 				</div>
 				<div className='col-sm-8'> 
-					<div>{this.props.status.text}</div>
+					<div>{this.props.status.full_text}</div>
 					<div>
 						<div>{this.props.status.retweet_count} retweets</div>
 						<div>{this.props.status.favorite_count} favorites</div>

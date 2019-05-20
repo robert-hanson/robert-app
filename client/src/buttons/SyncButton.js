@@ -19,7 +19,6 @@ export class SyncButton extends React.Component {
 	    const response = await fetch(url);
 	    const body = await response.json();
 
-
 	    if (response.status !== 200) {
 	      throw Error(body.message); 
 	    }
@@ -43,7 +42,6 @@ export class SyncButton extends React.Component {
 	}
 
 	render(){
-		debugger;
 		if (this.state.inSync === true)
 		{
 			return (<button className='btn btn-secondary' disabled>Sync</button>);
