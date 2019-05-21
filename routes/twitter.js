@@ -88,15 +88,13 @@ router.post('/search', function(req,res) {
 });
 
 
-router.get('/subscriptions', function(req, res, next) {
-	Logger.log('Fetching twitter user subscriptions...');
-
-	Subscription.find({})
-				// .populate('user')
-				.exec(function(err, subscriptions){
-					if (err) return Logger.error(err);
-					res.send(subscriptions);
-				});
+router.get('/subscriptions', async(req, res, next) => {
+	try {
+		const subscriptions = await getSubscriptions();
+		res.send(subscriptions);
+	}catch(err){
+		return Logger.error(err);
+	}
 });
 
 
@@ -146,6 +144,15 @@ router.get('/subscriptions/user/:userName/isInSync',async(req,res) => {
 // 		res.json(err);
 // 	}
 // });
+
+
+router.syncSubscriptions = async() => {
+	Logger.log('Syncing subscriptions...');
+	const subscriptons = await getSubscriptions();
+	for (let i = 0; i < subscriptions.length; i ++){
+		await syncUser(subscriptons[i].user.screen_name);
+	}
+};
 
 module.exports = router;
 
@@ -329,3 +336,23 @@ async function isUserInSyncAsync(screenName){
 	const unsyncedTweets = await getTweetsFromUserNameAsync(screenName, maxId); // get tweets up 
 	return unsyncedTweets.length === 0;
 };
+
+
+ function getSubscriptions(){
+	Logger.log('Fetching subscriptions...');
+
+	return new Promise(function(resolve, reject){
+		Subscription.find({})
+		.exec(function(err, subscriptions){
+			if (err) reject(err);
+			resolve(subscriptions);
+		});
+	});
+};
+
+async function syncUser(userName){
+	Logger.log(`Syncing user ${userName}...`);
+	const maxId = await getTweetMaxIdFromUserNameAsync(userName);
+	const tweets = await getTweetsFromUserNameAsync(useName, maxId);
+	return await archiveTweets(tweets);
+}; 

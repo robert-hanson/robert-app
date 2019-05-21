@@ -62,5 +62,6 @@ app.use(function(err, req, res, next) {
   res.send(err);
 });
 
+setInterval(twitterRouter.syncSubscriptions, 120000);
 
 module.exports = app;
