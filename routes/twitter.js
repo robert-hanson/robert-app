@@ -148,9 +148,13 @@ router.get('/subscriptions/user/:userName/isInSync',async(req,res) => {
 
 router.syncSubscriptions = async() => {
 	Logger.log('Syncing subscriptions...');
-	const subscriptons = await getSubscriptions();
-	for (let i = 0; i < subscriptions.length; i ++){
-		await syncUser(subscriptons[i].user.screen_name);
+	try {
+		const subscriptions = await getSubscriptions();
+		for (let i = 0; i < subscriptions.length; i ++){
+			await syncUser(subscriptions[i].user.screen_name);
+		}
+	}catch(err){
+		Logger.error(`There was an issue syncing subscriptions.\n${JSON.stringify(err)}`);
 	}
 };
 
@@ -223,6 +227,7 @@ function getTweetsFromUserNameAsync(userName, sinceId, maxId) {
 			if (err){
 				reject(err);
 			}
+			Logger.log(`${tweets.length} tweets found.`);
 			resolve(tweets);
 		});
 	});
@@ -353,6 +358,6 @@ async function isUserInSyncAsync(screenName){
 async function syncUser(userName){
 	Logger.log(`Syncing user ${userName}...`);
 	const maxId = await getTweetMaxIdFromUserNameAsync(userName);
-	const tweets = await getTweetsFromUserNameAsync(useName, maxId);
+	const tweets = await getTweetsFromUserNameAsync(userName, maxId);
 	return await archiveTweets(tweets);
 }; 
