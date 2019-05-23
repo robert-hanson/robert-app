@@ -26,3 +26,9 @@ exports.twitterSubscriptions = process.env.TWITTER_SUBSCRIPTIONS || [];
 exports.db = {
 	connectionString: process.env.DB_CONNECTION_STRING
 };
+
+
+exports.subscriptionsSyncInterval = process.env.SUBSCRIPTIONS_SYNC_INTERVAL;
+
+
+exports.staticDirPath = process.env.STATIC_DIR_PATH;

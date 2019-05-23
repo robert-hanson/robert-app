@@ -31,7 +31,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'client/public')));
+app.use(express.static(path.join(__dirname, config.staticDirPath)));
 
 
 // bind routes
@@ -62,6 +62,6 @@ app.use(function(err, req, res, next) {
   res.send(err);
 });
 
-setInterval(twitterRouter.syncSubscriptions, 120000);
+setInterval(twitterRouter.syncSubscriptions, config.subscriptionsSyncInterval);
 
 module.exports = app;
