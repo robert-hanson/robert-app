@@ -87,6 +87,24 @@ router.post('/search', function(req,res) {
 
 });
 
+router.post('/searchArchive', async(req,res) =>{
+	try {
+		
+		var searchQuery = req.body.queryString;
+		var searchBy = req.body.searchBy; // 'user' or 'text'
+
+		if (searchBy == 'user'){
+			const tweets = await getArchivedTweetsFromUserNameAsync(searchQuery);
+			console.log('TWEETS: ' + JSON.stringify(tweets));
+			res.send(tweets);
+		}
+	} catch (e){
+		console.error(e);
+		res.send(e);
+	}
+
+});
+
 
 router.get('/subscriptions', async(req, res, next) => {
 	try {
@@ -234,6 +252,12 @@ function getTweetsFromUserNameAsync(userName, sinceId, maxId) {
 }
 
 
+async function getArchivedTweetsFromUserNameAsync(userName, sinceId, maxId) {
+	Logger.log(`Searching archived tweets from User {${userName}}`);
+	var tweets = await Tweet.find({"user.screen_name": userName});
+	return tweets;
+}
+
 function getTweetMaxIdFromUserNameAsync(userName){
 	return new Promise(function(resolve, reject){
 		Logger.log(`Getting max id of {${userName}}`);
@@ -343,14 +367,23 @@ async function isUserInSyncAsync(screenName){
 };
 
 
- function getSubscriptions(){
+ async function getSubscriptions(){
 	Logger.log('Fetching subscriptions...');
 
 	return new Promise(function(resolve, reject){
 		Subscription.find({})
-		.exec(function(err, subscriptions){
+		.exec(async (err, subscriptions)=>{
 			if (err) reject(err);
-			resolve(subscriptions);
+			
+			// add flag to each subscription for if in sync or not
+			var updatedSubscriptions = [];
+			for (const s of subscriptions) {
+				var subscription = s.toObject(); // must create new object to add a new property(mongoose disables by default)
+				subscription.isInSync = await isUserInSyncAsync(subscription.user.screen_name); 
+				// subscriptions[i] = subscription;
+				updatedSubscriptions.push(subscription);
+			};
+			resolve(updatedSubscriptions);
 		});
 	});
 };

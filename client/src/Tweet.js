@@ -8,7 +8,7 @@ export class Tweet extends React.Component {
 			<div>
 			<div className={this.props.status.retweeted_status ? "bg-light row" : "row"}>
 				<div className='col-sm-2 text-center'>
-					<img src={this.props.status.user.profile_image_url} alt='profile img'/>
+					<img src={this.props.status.user.profile_image_url_https} alt='profile img'/>
 					<div className='text-center'>{this.props.status.user.screen_name}</div>
 				</div>
 				<div className='col-sm-8'> 

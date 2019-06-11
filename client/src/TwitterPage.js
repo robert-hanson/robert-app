@@ -32,9 +32,9 @@ export class TwitterPage extends React.Component {
 		  <li className="nav-item">
 		    <a className="nav-link" data-toggle="tab" href="#subscriptionsPane">Subscriptions</a>
 		  </li>
-		  <li className="nav-item">
+		  {/* <li className="nav-item">
 		    <a className="nav-link" data-toggle="tab" href="#archivedPane">Archived</a>
-		  </li>
+		  </li> */}
 		</ul>
 		<br/>
 

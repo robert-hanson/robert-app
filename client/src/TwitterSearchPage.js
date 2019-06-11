@@ -14,7 +14,8 @@ export class TwitterSearchPage extends React.Component {
   }
 
   handleSearch(formState){
-    fetch('/twitter/search/', {
+    const url = formState.searchInOption === 'twitter' ? '/twitter/search/'  : 'twitter/searchArchive/';
+    fetch(url, {
       method: 'POST', // or 'PUT'
       body: JSON.stringify({
         queryString: formState.searchQuery,

@@ -6,12 +6,14 @@ export class TwitterSearchControls extends React.Component {
     super(props);
     this.state = { 
       searchQuery: '',
-      searchByOption: "user"
+      searchByOption: "user",
+      searchInOption: "twitter",
     };
 
     this.handleSearchQueryChange = this.handleSearchQueryChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
-    this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.handleSearchByOptionChange = this.handleSearchByOptionChange.bind(this);
+    this.handleSearchInOptionChange = this.handleSearchInOptionChange.bind(this);
   }
 
   handleSearchQueryChange(event) {
@@ -24,9 +26,15 @@ export class TwitterSearchControls extends React.Component {
     this.props.onSearch(this.state);
   }
 
-  handleOptionChange(e){
+  handleSearchByOptionChange(e){
     this.setState({
       searchByOption: e.target.value
+    });
+  }
+
+  handleSearchInOptionChange(e){
+    this.setState({
+      searchInOption: e.target.value
     });
   }
 
@@ -44,7 +52,7 @@ export class TwitterSearchControls extends React.Component {
                 name="optradio"
                 value="user"
                 checked={this.state.searchByOption === "user"} 
-                onChange={this.handleOptionChange}
+                onChange={this.handleSearchByOptionChange}
                 className="form-check-input"
               />
               Username
@@ -57,13 +65,44 @@ export class TwitterSearchControls extends React.Component {
                 name="optradio" 
                 value="text"
                 checked={this.state.searchByOption === "text"} 
-                onChange={this.handleOptionChange}
+                onChange={this.handleSearchByOptionChange}
                 className="form-check-input"
               />
               Text
             </label>
           </div>
         </div>
+
+         <div className='form-check-inline col-sm-12'>
+          <label htmlFor="search">Search in:</label>
+          <div className='form-check'>
+            <label className="form-check-label">
+              <input 
+                type="radio" 
+                name="searchInRadio"
+                value="twitter"
+                checked={this.state.searchInOption === "twitter"} 
+                onChange={this.handleSearchInOptionChange}
+                className="form-check-input"
+              />
+              Twitter
+            </label>
+          </div>
+          <div className='form-check'>
+            <label className='form-check-label'>
+              <input 
+                type="radio" 
+                name="searchInRadio" 
+                value="archive"
+                checked={this.state.searchInOption === "archive"} 
+                onChange={this.handleSearchInOptionChange}
+                className="form-check-input"
+              />
+              Archives
+            </label>
+          </div>
+        </div>
+
         <TwitterSearchBar 
           searchBy={this.state.searchByOption} 
           onChange={this.handleSearchQueryChange} 

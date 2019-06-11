@@ -1,5 +1,6 @@
 import React from 'react';
-import {SyncButton} from './buttons/SyncButton';
+// import {SyncButton} from './buttons/SyncButton';
+// import {Modal} from './Modal';
 
 export class TwitterSubscriptionsPage extends React.Component {
   constructor(props) {
@@ -7,32 +8,37 @@ export class TwitterSubscriptionsPage extends React.Component {
     this.state = {
       subscriptions: [],
       screen_name: '',
-      errorMessage: ''
+      errorMessage: '',
+      inEditMode: false
     };
 
     this.handleScreenNameChange = this.handleScreenNameChange.bind(this);
     this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    this.toggleEditMode = this.toggleEditMode.bind(this);
   }
 
 
   componentDidMount(){
     // Call our fetch function below once the component mounts
-    this.loadSubscriptions()
-      .then(subscriptions => this.setState({subscriptions: subscriptions}))
-      .catch(err => console.error(err));
+    this.loadSubscriptions().catch(err => console.error(err));
+    this.interval = setInterval(() => {
+      console.log("loading subs..");
+      this.loadSubscriptions().catch(err => console.error(err));
+    }, 100000)
   };
 
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
 
   loadSubscriptions = async() => {
     const response = await fetch('/twitter/subscriptions');
     const body = await response.json();
 
-
-
     if (response.status !== 200) {
       throw Error(body.message); 
     }
-    return body;
+    this.setState({subscriptions: body});
   };
 
   handleScreenNameChange(e) {
@@ -60,6 +66,9 @@ export class TwitterSubscriptionsPage extends React.Component {
     return unsubscribeFromUser;
   };
 
+  toggleEditMode(){
+    this.setState({inEditMode: !this.state.inEditMode});
+  }
 
   handleAddButtonClick = async(e) => {
     const url = '/twitter/subscriptions/user';
@@ -70,7 +79,7 @@ export class TwitterSubscriptionsPage extends React.Component {
       body: JSON.stringify({screen_name: this.state.screen_name})
     });
     const body = await response.json();
-debugger;
+    debugger;
     if (body.error) {
       // pass a function to map
       const errMsgs = body.error.map(x => <p>{x.message}</p>);
@@ -85,9 +94,8 @@ debugger;
         });   
     }
 
-    this.loadSubscriptions()
-      .then(subscriptions => this.setState({subscriptions: subscriptions}))
-      .catch(err => console.error(err));
+    // reload subscriptions
+    await this.loadSubscriptions();
   };
 
 
@@ -97,14 +105,19 @@ debugger;
       <tr key={s.user.screen_name}>
         <td>{s.user.screen_name}</td>
         <td>{s.user.description}</td>
-        <td><SyncButton user={s.user}/></td>
-        <td><button className='btn btn-link' onClick={this.handleUnsubscribeClick(s.user.screen_name)}>Unsubscribe</button></td>
+        {/* <td><SyncButton user={s.user}/></td> */}
+        <td>
+        {this.state.inEditMode  &&  
+          <button className='btn btn-link' onClick={this.handleUnsubscribeClick(s.user.screen_name)}>Unsubscribe</button>
+        }
+          </td>
       </tr>
       );
+      
 
     return (
       <div>
-        <div className="input-group col-sm-6">
+        {/* <div className="input-group col-sm-6">
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon1">@</span>
           </div>
@@ -118,7 +131,7 @@ debugger;
             onChange={this.handleScreenNameChange}
           />
           <button className='btn btn-primary' onClick={this.handleAddButtonClick}>Add User</button>
-        </div>
+        </div> */}
         <div className='col-sm-6 text-danger'>
           {this.state.errorMessage}
         </div>
@@ -128,8 +141,8 @@ debugger;
             <tr>
               <th>Screen Name</th>
               <th>Description</th>
+              {/* <th>Tweets Archived</th> */}
               <th>{/* place holder for delete button */}</th>
-              <th>{/* place holder for sync button */}</th>
             </tr>
           </thead>
           <tbody>
@@ -137,6 +150,20 @@ debugger;
           </tbody>
         </table>
         <hr/>
+        
+        {this.state.inEditMode ? (
+          <div>
+            <button class='btn btn-link'>Add User</button>
+            <br/>
+            {/* <button class='btn btn-primary'  onClick={this.toggleEditMode}>Save</button> */}
+            <button class='btn btn-secondary float-right'  onClick={this.toggleEditMode}>Close</button>
+          </div>
+        ) : (
+          <button class='btn btn-link float-right' onClick={this.toggleEditMode}>Edit Subscriptions</button>
+        )}
+        {/* <Modal show={true} onClose={() => {console.log('no');}}> content </Modal> */}
+        {/* <button class='btn btn-link'>Add</button> */}
+        {/* <button class='btn btn-link float-right'>Refresh</button>       */}
       </div>
     );
   }
