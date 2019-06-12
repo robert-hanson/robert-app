@@ -59,7 +59,7 @@ export class TwitterSubscriptionsPage extends React.Component {
         alert('There was a problem. User could not be unsubscribed from')
       }else{
             this.loadSubscriptions()
-            .then(subscriptions => this.setState({subscriptions: subscriptions}))
+            .then(()=>{}) // do nothing here and keeping as promise for now because async/await wasn't working...
             .catch(err => console.error(err));
       }
     }
@@ -117,21 +117,6 @@ export class TwitterSubscriptionsPage extends React.Component {
 
     return (
       <div>
-        {/* <div className="input-group col-sm-6">
-          <div className="input-group-prepend">
-            <span className="input-group-text" id="basic-addon1">@</span>
-          </div>
-          <input 
-            type="text" 
-            className="form-control" 
-            placeholder="" 
-            aria-label="Username" 
-            aria-describedby="basic-addon1"
-            value={this.state.screen_name}
-            onChange={this.handleScreenNameChange}
-          />
-          <button className='btn btn-primary' onClick={this.handleAddButtonClick}>Add User</button>
-        </div> */}
         <div className='col-sm-6 text-danger'>
           {this.state.errorMessage}
         </div>

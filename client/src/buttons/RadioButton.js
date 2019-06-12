@@ -1,34 +1,26 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-// export class Tweet extends React.Component {
-// 	constructor(props){
-// 		super(props);
-// 		this.state = {
-// 			isSelected: this.props.checked ? this.prop.checked : false
-// 		};
+export class RadioButton extends React.Component {
 
-// 		this.handleOptionChange = this.handleOptionChange.bind(this);
-// 	}
+	render(){
+		return (
+            <div className='form-check'>
+                <label className='form-check-label'>
+                    <input 
+                        type="radio" 
+                        name={this.props.radioName} 
+                        value={this.props.value}
+                        checked={this.props.isSelected} 
+                        onChange={this.props.onChange}
+                        className="form-check-input"
+                    />
+                    {this.props.text}
+                </label>
+            </div>
 
-// 	handleOptionChange(){
-// 		this.setState({
-// 		    selectedOption: changeEvent.target.value
-// 		});
-// 	}
+		);
+	}
+}
 
-// 	render(){
-// 		return (
-//             <label className="radio-inline">
-//               <input type="radio" 
-//               	name="optradio"
-//                 type="radio"  
-//                 value="user"
-//                 checked={this.state.isSelected === "user"} 
-//                 onChange={this.handleOptionChange}
-//               />
-//               By Username
-//             </label>
-// 		);
-// 	}
-// }
+

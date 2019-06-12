@@ -1,5 +1,7 @@
 import React from 'react';
 import {TwitterSearchBar} from './TwitterSearchBar';
+import {RadioButton} from './buttons/RadioButton';
+import {RadioButtonGroup} from './buttons/RadioButtonGroup';
 
 export class TwitterSearchControls extends React.Component {
   constructor(props) {
@@ -26,83 +28,49 @@ export class TwitterSearchControls extends React.Component {
     this.props.onSearch(this.state);
   }
 
-  handleSearchByOptionChange(e){
+  handleSearchByOptionChange(optionVal){
+    debugger;
     this.setState({
-      searchByOption: e.target.value
+      searchByOption: optionVal
     });
   }
 
-  handleSearchInOptionChange(e){
+  handleSearchInOptionChange(optionVal){
     this.setState({
-      searchInOption: e.target.value
+      searchInOption: optionVal
     });
   }
 
   render() {
 
-    // Display a "Like" <button>
+    // create radio button objects
+    const searchByOptions = [
+      {text: "Username", value: "user"},
+      {text: "Text", value: "text"}
+    ];
+
+    const searchInOptions = [
+      {text: "Twitter", value: "twitter"},
+      {text: "Archives", value: "archive"}
+    ];
+
+
     return (
       <div>
-        <div className='form-check-inline col-sm-12'>
-          <label htmlFor="search">Search by:</label>
-          <div className='form-check'>
-            <label className="form-check-label">
-              <input 
-                type="radio" 
-                name="optradio"
-                value="user"
-                checked={this.state.searchByOption === "user"} 
-                onChange={this.handleSearchByOptionChange}
-                className="form-check-input"
-              />
-              Username
-            </label>
-          </div>
-          <div className='form-check'>
-            <label className='form-check-label'>
-              <input 
-                type="radio" 
-                name="optradio" 
-                value="text"
-                checked={this.state.searchByOption === "text"} 
-                onChange={this.handleSearchByOptionChange}
-                className="form-check-input"
-              />
-              Text
-            </label>
-          </div>
-        </div>
-
-         <div className='form-check-inline col-sm-12'>
-          <label htmlFor="search">Search in:</label>
-          <div className='form-check'>
-            <label className="form-check-label">
-              <input 
-                type="radio" 
-                name="searchInRadio"
-                value="twitter"
-                checked={this.state.searchInOption === "twitter"} 
-                onChange={this.handleSearchInOptionChange}
-                className="form-check-input"
-              />
-              Twitter
-            </label>
-          </div>
-          <div className='form-check'>
-            <label className='form-check-label'>
-              <input 
-                type="radio" 
-                name="searchInRadio" 
-                value="archive"
-                checked={this.state.searchInOption === "archive"} 
-                onChange={this.handleSearchInOptionChange}
-                className="form-check-input"
-              />
-              Archives
-            </label>
-          </div>
-        </div>
-
+        {/* Search By options (username, text) */}
+        <RadioButtonGroup 
+          labelText={"Search By:"}
+          options={searchByOptions}
+          onOptionChange={this.handleSearchByOptionChange}
+          defaultValue={this.state.searchByOption}
+        />
+        {/* Search In options (twitter, archive) */}        
+        <RadioButtonGroup 
+          labelText={"Search In:"}
+          options={searchInOptions}
+          onOptionChange={this.handleSearchInOptionChange}
+          defaultValue={this.state.searchInOption}
+        />
         <TwitterSearchBar 
           searchBy={this.state.searchByOption} 
           onChange={this.handleSearchQueryChange} 
