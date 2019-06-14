@@ -32,3 +32,5 @@ exports.subscriptionsSyncInterval = process.env.SUBSCRIPTIONS_SYNC_INTERVAL;
 
 
 exports.staticDirPath = process.env.STATIC_DIR_PATH;
+
+exports.nasaApiKey = process.env.API_KEY_NASA;

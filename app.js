@@ -13,6 +13,7 @@ var usersRouter = require('./routes/users');
 var twitterRouter = require('./routes/twitter');
 var reactRouter = require('./routes/react');
 var mongoRouter = require('./routes/mongo');
+var nasaRouter = require('./routes/nasa');
 
 var app = express();
 
@@ -40,6 +41,7 @@ app.use('/users', usersRouter);
 app.use('/twitter', twitterRouter);
 app.use('/react', reactRouter);
 app.use('/mongo', mongoRouter);
+app.use('/nasa', nasaRouter);
 
 
 
