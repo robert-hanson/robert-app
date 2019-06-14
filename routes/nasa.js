@@ -8,6 +8,7 @@ var Nasa = require('../managers/Nasa.js');
 router.get('/apod', async(req, res) => {
     try{
         const picOfTheDay = await Nasa.getAstronomyPictureOfTheDay();
+        console.log(picOfTheDay);
         res.send(picOfTheDay);
     } catch(e){
         console.error(e);
