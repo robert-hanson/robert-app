@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {TwitterPage} from './TwitterPage';
-import {NasaApod} from './NasaApod';
+import {NasaPage} from './NasaPage';
 // import logo from './logo.svg';
 import './App.css';
 
@@ -31,8 +31,8 @@ class App extends Component {
   render() {
     return (
         <div>
-          <TwitterPage/>
-          <NasaApod />
+          {/* <TwitterPage/> */}
+          <NasaPage />
         </div>
       );
   };

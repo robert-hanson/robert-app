@@ -35,7 +35,7 @@ export class NasaApod extends React.Component {
     render(){ 
         debugger;
         return (
-            <img src={this.state.data.hdurl} alt={this.state.data.title}/>
+            <img className='img-fluid' src={this.state.data.hdurl} alt={this.state.data.title} />
         )
     }
 }
