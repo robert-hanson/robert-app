@@ -95,7 +95,7 @@ router.post('/searchArchive', async(req,res) =>{
 
 		if (searchBy == 'user'){
 			const tweets = await getArchivedTweetsFromUserNameAsync(searchQuery);
-			console.log('TWEETS: ' + JSON.stringify(tweets));
+			Logger.log('TWEETS: ' + JSON.stringify(tweets));
 			res.send(tweets);
 		}
 	} catch (e){

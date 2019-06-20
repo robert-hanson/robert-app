@@ -1,6 +1,5 @@
 import React from 'react';
 import {TwitterSearchBar} from './TwitterSearchBar';
-import {RadioButton} from './buttons/RadioButton';
 import {RadioButtonGroup} from './buttons/RadioButtonGroup';
 
 export class TwitterSearchControls extends React.Component {

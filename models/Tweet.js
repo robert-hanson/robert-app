@@ -29,6 +29,7 @@ var TweetSchema = new Schema({
 			verified: Boolean,
 			created_at: String,
 			profile_banner_url: String,
+			profile_image_url: String,
 			profile_image_url_https: String
 
 	},
