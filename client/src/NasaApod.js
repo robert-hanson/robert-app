@@ -6,7 +6,8 @@ export class NasaApod extends React.Component {
         this.state = {
             data: {
                 url: '#',
-                title: ""
+                title: "",
+                explanation: ""
             }
         };
         this.loadImage = this.loadImage.bind(this);
@@ -35,7 +36,11 @@ export class NasaApod extends React.Component {
     render(){ 
         debugger;
         return (
-            <img className='img-fluid' src={this.state.data.hdurl} alt={this.state.data.title} />
+            <div className='offset-md-2 col-md-8'>
+                {this.props.showTitle && <h3 class='text-center'>{this.state.data.title}</h3>}
+                <img className='img-fluid' src={this.state.data.hdurl} alt={this.state.data.title} />
+                <p>{this.state.data.explanation}</p>
+            </div>
         )
     }
 }
