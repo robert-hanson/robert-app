@@ -1,10 +1,10 @@
 import React from 'react';
 
-export class NasaApod extends React.Component {
+export class NasaApodPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            data: {
+            apodImage: {
                 url: '#',
                 title: "",
                 explanation: ""
@@ -27,7 +27,7 @@ export class NasaApod extends React.Component {
                 throw Error(res.statusText);
             }
             var data = await res.json();
-            this.setState({data: data});
+            this.setState({apodImage: data});
         } catch(e){
             console.error(e);
         }
@@ -36,10 +36,13 @@ export class NasaApod extends React.Component {
     render(){ 
         debugger;
         return (
-            <div className='offset-md-2 col-md-8'>
-                {this.props.showTitle && <h3 class='text-center'>{this.state.data.title}</h3>}
-                <img className='img-fluid' src={this.state.data.hdurl} alt={this.state.data.title} />
-                <p>{this.state.data.explanation}</p>
+            <div>
+                <div className='offset-md-2 col-md-8'>
+                    {/* {this.props.showTitle && <h3 class='text-center'>{this.state.apodImage.title}</h3>} */}
+                    <h3 class='text-center'>{this.state.apodImage.title}</h3>
+                    <img className='img-fluid' src={this.state.apodImage.hdurl} alt={this.state.apodImage.title} />
+                </div>
+                <p className="pt-3 pb-5">{this.state.apodImage.explanation}</p>
             </div>
         )
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {NasaApod} from './NasaApod';
+import {NasaApodPage} from './NasaApodPage';
 import {NasaEarthImageSearch} from './NasaEarthImageSearch';
 
 export class NasaPage extends React.Component {
@@ -43,7 +43,7 @@ export class NasaPage extends React.Component {
                     <div className="tab-pane container fade" id="apod">
                         <br/>
                         <p>NASA's Astronomy Picture of the Day:</p>
-                        <NasaApod showTitle={true} />
+                        <NasaApodPage />
                     </div>
                     {/* <div className="tab-pane container fade" id="menu2"></div> */}
                 </div>
