@@ -33,9 +33,10 @@ router.get('/earth/imagery', async(req,res) => {
         const image = await Nasa.getEarthImage(req.query.lat, req.query.lon, req.query.dim, req.query.date, req.query.cloud_score);
         res.send(image);
     } catch(e){
-        console.error(e);
         Logger.log("there was an error :(");
-        res.send(e);
+        console.error(JSON.stringify(e));
+        let response = {error: e};
+        res.send(response);
     }
 });
 

@@ -10,12 +10,14 @@ export class NasaEarthImageSearch extends React.Component {
             dim: 0.025,         // width and height of image in degrees
             date: null,         // date of image; if not supplied, then the most recent image (i.e., closest to today) is used
             cloud_score: false,  // calculate the percentage of the image covered by clouds
-            resultImage: null
+            searchResult: null, 
+            isSearching: false
         };
 
         this.handleLatValueChange = this.handleLatValueChange.bind(this);
         this.handleLonValueChange = this.handleLonValueChange.bind(this);
         this.handleImageSearch = this.handleImageSearch.bind(this);
+        this.handleImageLoaded = this.handleImageLoaded.bind(this);
     }
 
     handleLatValueChange(event){
@@ -31,39 +33,98 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     handleImageSearch = async() => {
-        let url = `/nasa/earth/imagery?lat=${this.state.lat}&long=${this.state.lon}`;
+        this.setState({
+            isSearching: true, 
+            searchResult: null
+        });
+        let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}`;
         const response = await fetch(url);
         const body = await response.json();
     
+        // client side exception handling
         if (response.status !== 200) {
           throw Error(body.message); 
         }
-        this.setState({resultImage: body});
+
+        // 
+        this.setState({
+            searchResult: body
+        });
+    }
+
+    handleImageLoaded(){
+        debugger;
+        this.setState({isSearching: false});
     }
 
     render(){
+        debugger;
+        // let spinnerJsx = <div className='text-center'>  
+        //                     <span class="spinner-border spinner-border-sm"></span>
+        //                 </div>;
+        // let searchResultsJsx;
+        // if (this.state.searchResult){
+        //     imageToRender = <div className='text-center'>  
+        //                         <span hidden={!this.isSearching} class="spinner-border spinner-border-sm"></span>
+        //                         <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />;
+        //                     </div>
+            
+
+        //     if (this.state.isSearching)
+        //     {
+        //         searchResultsJsx = spinnerJsx;
+        //     }
+        //     searchResultsJsx = (this.state.isSearching && spinnerJsx) 
+        //     if (this.state.searchResult.error){
+        //         searchResultsJsx = <p className="text-danger text-center">{this.state.searchResult.error.message}</p>;
+        //     } else {
+        //         imageToRender = <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />;
+        //     }
+
+        // }
+        
+        
+        
+        // else if (this.state.searchResult.error){
+        //     imageToRender = <p className="text-danger text-center">{this.state.searchResult.error.message}</p>;
+        // } else if ()
+        // if (this.state.isSearching === true){
+        //     imageToRender = <div className='text-center'>  
+        //                         <span class="spinner-border spinner-border-sm"></span>
+        //                     </div>;
+        // } else if (this.state.searchResult && this.state.searchResult.error){
+        // } else if(this.state.searchResult) {
+        //     imageToRender = <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />;
+        // }
+
         return(
             <div>
                 {/* <h2>Earth</h2> */}
-                <p>Search Landsat 8 images of Earth for the supplied location and date</p>
-                <div className='col-md-6'>
-                    <div className="form-group">
-                        <label for="lat">Lat:</label>
-                        <input type="text" className="form-control" id="lat" />
+                <div className="row">
+                    <div className='col-md-6'>
+                        <p>Search Landsat 8 images of Earth for the supplied location and date</p>
+                        <div className="form-group">
+                            <label for="lat">Lat:</label>
+                            <input type="number" className="form-control" id="lat" max="90" min="-90" onChange={this.handleLatValueChange} />
+                        </div>
+                        <div className="form-group">
+                            <label for="lon">Lon:</label>
+                            <input type="number" className="form-control" id="lon" onChange={this.handleLonValueChange} />
+                        </div>
+                        <div className="form-group form-check">
+                            <label className="form-check-label">
+                                <input className="form-check-input" type="checkbox"/> Include Cloud Score
+                            </label>
+                        </div>
+                        <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Find Image</button>
                     </div>
-                    <div className="form-group">
-                        <label for="lon">Lon:</label>
-                        <input type="text" className="form-control" id="lon" />
+                    <div className='col-md-6'>
+                        {this.state.searchResult && 
+                            <div className='text-center'>  
+                                <span hidden={this.state.isSearching === false} class="spinner-border spinner-border-sm"></span>
+                                <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />
+                            </div>}
                     </div>
-                    <div className="form-group form-check">
-                        <label className="form-check-label">
-                            <input className="form-check-input" type="checkbox"/> Include Cloud Score
-                        </label>
-                    </div>
-                    <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch}>Find Image</button>
-                </div>
-                <div className='col-md-6'>
-                    {this.state.resultImage != null && <NasaEarthImage data={this.state.resultImage}/>}
                 </div>
             </div>
 
