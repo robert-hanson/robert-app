@@ -40,4 +40,16 @@ router.get('/earth/imagery', async(req,res) => {
     }
 });
 
+
+router.get('/earth/assets', async(req,res) => {
+    try {
+        const assets = await Nasa.getLandsatAssets(req.query.lat, req.query.lon, req.query.begin, req.query.end);
+        res.send(assets);
+    } catch(e){
+        Logger.log("there was an error :(");
+        console.error('e: '  + JSON.stringify(e));
+        let response = {error: e};
+        res.send(response);
+    }
+});
 module.exports = router;

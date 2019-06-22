@@ -39,7 +39,7 @@ export class NasaApodPage extends React.Component {
             <div>
                 <div className='offset-md-2 col-md-8'>
                     {/* {this.props.showTitle && <h3 class='text-center'>{this.state.apodImage.title}</h3>} */}
-                    <h3 class='text-center'>{this.state.apodImage.title}</h3>
+                    <h3 className='text-center'>{this.state.apodImage.title}</h3>
                     <img className='img-fluid' src={this.state.apodImage.hdurl} alt={this.state.apodImage.title} />
                 </div>
                 <p className="pt-3 pb-5">{this.state.apodImage.explanation}</p>

@@ -28,13 +28,24 @@ exports.saveNasaApod = async(apod) => {
 
 exports.getEarthImage = async(lat, lon, dim, date, cloud_score) => {
     // base url (lat/lon required)
-    Logger.log('fetching earth image...');
+    Logger.log(`fetching earth image for Lat:${lon} Lon:${lon}...`);
     let url = `https://api.nasa.gov/planetary/earth/imagery/?lat=${lat}&lon=${lon}&api_key=${NASA_API_KEY}`;
     if (dim) url += `&dim=${dim}`;
     if (date) url += `&date=${date}`;
     if (cloud_score) url += `&cloud_score=${cloud_score}`;
     const response = await axios.get(url);
     return response.data;
+};
+
+exports.getLandsatAssets = async(lat,lon, begin, end) => {
+    // base url (lat/lon required)
+    Logger.log('fetching landsat assets...');
+    let url = `https://api.nasa.gov/planetary/earth/assets?lat=${lat}&lon=${lon}&api_key=${NASA_API_KEY}`;
+    if (begin) url += `&begin=${begin}`;
+    if (end) url += `&end=${end}`;
+    const response = await axios.get(url);
+    Logger.log(`Number of assets returned: ${response.data.count}`)
+    return response.data.results;
 };
 
 const doesNasaApodExist = async(apod) => {

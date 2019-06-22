@@ -1,5 +1,6 @@
 import React from 'react';
 import {NasaEarthImage} from './NasaEarthImage';
+import { NasaEarthAssets } from './NasaEarthAssets';
 
 export class NasaEarthImageSearch extends React.Component {
     constructor(props){
@@ -11,11 +12,13 @@ export class NasaEarthImageSearch extends React.Component {
             date: null,         // date of image; if not supplied, then the most recent image (i.e., closest to today) is used
             cloud_score: false,  // calculate the percentage of the image covered by clouds
             searchResult: null, 
-            isSearching: false
+            isSearching: false,
+            assetsSection: null
         };
 
         this.handleLatValueChange = this.handleLatValueChange.bind(this);
         this.handleLonValueChange = this.handleLonValueChange.bind(this);
+        this.handleCloudScoreChange = this.handleCloudScoreChange.bind(this);
         this.handleImageSearch = this.handleImageSearch.bind(this);
         this.handleImageLoaded = this.handleImageLoaded.bind(this);
     }
@@ -32,12 +35,19 @@ export class NasaEarthImageSearch extends React.Component {
         });
     }
 
+    handleCloudScoreChange() {
+        debugger;
+        this.setState({
+            cloud_score: !this.state.cloud_score //toggle
+        });
+    }
+
     handleImageSearch = async() => {
         this.setState({
             isSearching: true, 
             searchResult: null
         });
-        let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}`;
+        let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}`;
         const response = await fetch(url);
         const body = await response.json();
     
@@ -54,7 +64,11 @@ export class NasaEarthImageSearch extends React.Component {
 
     handleImageLoaded(){
         debugger;
-        this.setState({isSearching: false});
+        this.setState({
+            isSearching: false,
+            assetsSection: <NasaEarthAssets lat={this.state.lat} lon={this.state.lon}/>
+        });
+        
     }
 
     render(){
@@ -103,20 +117,23 @@ export class NasaEarthImageSearch extends React.Component {
                 <div className="row">
                     <div className='col-md-6'>
                         <p>Search Landsat 8 images of Earth for the supplied location and date</p>
-                        <div className="form-group">
-                            <label for="lat">Lat:</label>
-                            <input type="number" className="form-control" id="lat" max="90" min="-90" onChange={this.handleLatValueChange} />
-                        </div>
-                        <div className="form-group">
-                            <label for="lon">Lon:</label>
-                            <input type="number" className="form-control" id="lon" onChange={this.handleLonValueChange} />
+                        <div className='row'>
+                            <div className="col-md-4 form-group">
+                                <label htmlFor="lat">Lat:</label>
+                                <input type="number" className="form-control" id="lat" max="90" min="-90" onChange={this.handleLatValueChange} />
+                            </div>
+                            <div className="col-md-4 form-group">
+                                <label htmlFor="lon">Lon:</label>
+                                <input type="number" className="form-control" id="lon" onChange={this.handleLonValueChange} />
+                            </div>
                         </div>
                         <div className="form-group form-check">
                             <label className="form-check-label">
-                                <input className="form-check-input" type="checkbox"/> Include Cloud Score
+                                <input className="form-check-input" type="checkbox" onChange={this.handleCloudScoreChange}/> Include Cloud Score
                             </label>
                         </div>
                         <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Find Image</button>
+                        {this.state.assetsSection}
                     </div>
                     <div className='col-md-6'>
                         {this.state.searchResult && 
