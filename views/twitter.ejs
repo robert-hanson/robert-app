@@ -47,7 +47,6 @@
 
 			$('#btnSubmit').click(function(e){
 				e.preventDefault();
-				debugger;
 				var searchQuery = $('#search').val();
 				var toArchive = $('#archive').prop('checked');
 				$.post("twitter/search", 
@@ -55,19 +54,16 @@
 						searchQuery: searchQuery,
 						toArchive: toArchive
 					}, function(data){
-						debugger;
 						$("#results").html(data);
 					}
 				);
 			});
 
 			$('#btnViewSubs').click(function(e){
-				debugger;
 				e.preventDefault();
 
 				$.get("twitter/subscriptions", 
 					function(data){
-						debugger;
 						$("#results").html(data);
 					}
 				);

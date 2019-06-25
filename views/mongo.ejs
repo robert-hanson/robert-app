@@ -50,7 +50,6 @@
 
 		// Shorthand for $( document ).ready()
 		$(function() {
-			debugger;
 
 			$('#btnBetter').click(function(e){
 				e.preventDefault();
@@ -58,7 +57,6 @@
 			});
 
 			$('#btnSubmit').click(function(e){
-				debugger;
 				e.preventDefault();
 				var field1 = $('#field1').val();
 				var field2 = $('#field2').val();
@@ -69,7 +67,6 @@
 					url: "mongo/TestModel/add/", 
 					type: "post",
 					success: function(result){
-						debugger;
     					$("#results").text(result);
   					}
   				});

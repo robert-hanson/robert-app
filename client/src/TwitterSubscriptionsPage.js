@@ -79,7 +79,7 @@ export class TwitterSubscriptionsPage extends React.Component {
       body: JSON.stringify({screen_name: this.state.screen_name})
     });
     const body = await response.json();
-    debugger;
+
     if (body.error) {
       // pass a function to map
       const errMsgs = body.error.map(x => <p>{x.message}</p>);

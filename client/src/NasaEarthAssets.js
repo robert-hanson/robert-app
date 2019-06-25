@@ -23,7 +23,7 @@ export class NasaEarthAssets extends React.Component {
         }
 
         this.setState({
-            assets: body
+            assets: this.sortAssets(body)
         });
     }
 
@@ -35,7 +35,25 @@ export class NasaEarthAssets extends React.Component {
                     <td>{asset.date}</td>
                 </tr>
         );
-	}
+    }
+    
+
+    sortAssets(assets){
+        // callback used to sort
+         function compareAssets(a, b){
+            if (a.date > b.date){
+                return 1;
+            } else if (b.date > a.date){
+                return -1;
+            } else {
+                return 0;
+            }
+         }
+
+         const sortedAssets = [...assets].sort(compareAssets);
+        return sortedAssets;
+    }
+
 
     render(){
 

@@ -12,7 +12,6 @@ export class RadioButtonGroup extends React.Component {
     }
 
     handleOptionChange(e){
-        debugger;
         this.setState({ selectedValue: e.target.value },()=>{ 
             this.props.onOptionChange(this.state.selectedValue) 
         });

@@ -36,7 +36,6 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     handleCloudScoreChange() {
-        debugger;
         this.setState({
             cloud_score: !this.state.cloud_score //toggle
         });
@@ -63,7 +62,6 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     handleImageLoaded(){
-        debugger;
         this.setState({
             isSearching: false,
             assetsSection: <NasaEarthAssets lat={this.state.lat} lon={this.state.lon}/>
@@ -72,45 +70,6 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     render(){
-        debugger;
-        // let spinnerJsx = <div className='text-center'>  
-        //                     <span class="spinner-border spinner-border-sm"></span>
-        //                 </div>;
-        // let searchResultsJsx;
-        // if (this.state.searchResult){
-        //     imageToRender = <div className='text-center'>  
-        //                         <span hidden={!this.isSearching} class="spinner-border spinner-border-sm"></span>
-        //                         <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />;
-        //                     </div>
-            
-
-        //     if (this.state.isSearching)
-        //     {
-        //         searchResultsJsx = spinnerJsx;
-        //     }
-        //     searchResultsJsx = (this.state.isSearching && spinnerJsx) 
-        //     if (this.state.searchResult.error){
-        //         searchResultsJsx = <p className="text-danger text-center">{this.state.searchResult.error.message}</p>;
-        //     } else {
-        //         imageToRender = <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />;
-        //     }
-
-        // }
-        
-        
-        
-        // else if (this.state.searchResult.error){
-        //     imageToRender = <p className="text-danger text-center">{this.state.searchResult.error.message}</p>;
-        // } else if ()
-        // if (this.state.isSearching === true){
-        //     imageToRender = <div className='text-center'>  
-        //                         <span class="spinner-border spinner-border-sm"></span>
-        //                     </div>;
-        // } else if (this.state.searchResult && this.state.searchResult.error){
-        // } else if(this.state.searchResult) {
-        //     imageToRender = <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />;
-        // }
-
         return(
             <div>
                 {/* <h2>Earth</h2> */}

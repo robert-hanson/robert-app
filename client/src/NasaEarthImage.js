@@ -3,7 +3,6 @@ import React from 'react';
 export class NasaEarthImage extends React.Component {
     
     render(){
-        debugger;
         let cloudScoreJsx;
         if (!isNaN(this.props.data.cloud_score)){
             cloudScoreJsx = <p>Cloud score of {this.props.data.cloud_score}</p>;

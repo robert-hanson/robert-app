@@ -28,7 +28,6 @@ export class TwitterSearchControls extends React.Component {
   }
 
   handleSearchByOptionChange(optionVal){
-    debugger;
     this.setState({
       searchByOption: optionVal
     });

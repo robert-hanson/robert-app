@@ -19,7 +19,6 @@ export class NasaApodPage extends React.Component {
 
 
     loadImage = async() => {
-        debugger;
         try {
             const url = '/nasa/apod';
             const res = await fetch(url);
@@ -34,7 +33,6 @@ export class NasaApodPage extends React.Component {
     }
 
     render(){ 
-        debugger;
         return (
             <div>
                 <div className='offset-md-2 col-md-8'>

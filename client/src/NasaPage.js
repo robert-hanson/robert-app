@@ -10,7 +10,7 @@ export class NasaPage extends React.Component {
             <div>
 
 
-                <h1>Nasa API</h1>
+                <h1>RICS Test</h1>
                 <p>A react based UI to explore NASA's Open API</p>
 
                 <ul className="nav nav-tabs">
