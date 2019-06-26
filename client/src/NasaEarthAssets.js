@@ -5,7 +5,8 @@ export class NasaEarthAssets extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            assets: []
+            assets: [],
+            selectedAsset: null
         };
     }
 
@@ -34,23 +35,46 @@ export class NasaEarthAssets extends React.Component {
                     />
         });
 
+        // this.setState({
+        //     assets: assetElements
+        // });
+
         this.setState({
-            assets: assetElements
+            assets: sortedAssets
         });
+    }
+
+    handleSelectionChange(asset, event){
+        debugger;
+        this.setState({selectedAsset: asset});
+        this.props.onSelection(asset);
     }
 
 	getAssetRows(){
         return this.state.assets.map( 
             asset => 
-                <tr>
+                <tr 
+                    onClick={this.handleSelectionChange.bind(this, asset)}
+                    className={this.state.selectedAsset && this.state.selectedAsset.id === asset.id && "table-primary"}
+                >
                     <td>{asset.id}</td>
-                    <td>{asset.date}</td>
+                    <td >
+                        {
+                            new Date(asset.date).toLocaleDateString("en-US", 
+                            {
+                                month: "2-digit", 
+                                day:"2-digit",
+                                year: "numeric"
+                            })
+                        }
+                    </td>
                 </tr>
         );
     }
     
 
     sortAssets(assets){
+        debugger;
         // callback used to sort
          function compareAssets(a, b){
             if (a.date > b.date){
@@ -75,6 +99,7 @@ export class NasaEarthAssets extends React.Component {
     }
 
     render(){
+        debugger;
         let jsxToRender;
         if (this.state.assets.length > 0)
         {
@@ -82,27 +107,25 @@ export class NasaEarthAssets extends React.Component {
         }
 
         return (
-            <div>
-                {jsxToRender}
-            </div>
-
-
-
             // <div>
-            //     <h3>Assets</h3>
-            //     <table className='table'>
-            //         <thead>
-            //             <th>id</th>
-            //             <th>date</th>
-            //         </thead>
-            //         <tbody>
-            //             {this.getAssetRows()}
-            //         </tbody>
-            //     </table>
-
-            //     <hr/><p>delte this shit...</p>
-            //     {this.state.assets.length>0 && <NasaEarthAsset lat={this.props.lat} lon={this.props.lon} asset={this.state.assets[0]} />}
+            //     {jsxToRender}
             // </div>
+
+
+
+            <div className="overflow-auto">
+                <h4>Assets</h4>
+                <table className='table table-hover table-sm'>
+                    <thead className='thead-light'>
+                        <th>id</th>
+                        <th>date</th>
+                    </thead>
+                    <tbody>
+                        {this.getAssetRows()}
+                    </tbody>
+                </table>
+                
+            </div>
         );
     }
 }

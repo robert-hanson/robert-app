@@ -18,6 +18,7 @@ export class NasaEarthImageSearch extends React.Component {
 
         this.handleLatValueChange = this.handleLatValueChange.bind(this);
         this.handleLonValueChange = this.handleLonValueChange.bind(this);
+        this.handleDimValueChange = this.handleDimValueChange.bind(this);
         this.handleCloudScoreChange = this.handleCloudScoreChange.bind(this);
         this.handleImageSearch = this.handleImageSearch.bind(this);
         // this.handleImageLoaded = this.handleImageLoaded.bind(this);
@@ -35,6 +36,11 @@ export class NasaEarthImageSearch extends React.Component {
         });
     }
 
+    handleDimValueChange(event){
+        this.setState({
+            dim: event.target.value
+        });
+    }
     handleCloudScoreChange() {
         this.setState({
             cloud_score: !this.state.cloud_score //toggle
@@ -42,20 +48,26 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     handleImageSearch = async() => {
+        debugger;
         this.setState({
             isSearching: true
         });
 
-        this.setState({assetsSection: <NasaEarthAssets lat={this.state.lat} lon={this.state.lon}/>});
+        this.setState({assetsSection: <NasaEarthAssets 
+                                        lat={this.state.lat} 
+                                        lon={this.state.lon} 
+                                        dim={this.state.dim}
+                                        onSelection={(asset)=>{alert("you clicked " + asset.id)}}
+                                    />});
 
-        let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}`;
-        const response = await fetch(url);
-        const body = await response.json();
+        // let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}`;
+        // const response = await fetch(url);
+        // const body = await response.json();
     
-        // client side exception handling
-        if (response.status !== 200) {
-          throw Error(body.message); 
-        }
+        // // client side exception handling
+        // if (response.status !== 200) {
+        //   throw Error(body.message); 
+        // }
 
         // 
         this.setState({
@@ -90,14 +102,28 @@ export class NasaEarthImageSearch extends React.Component {
                                 <label htmlFor="lon">Lon:</label>
                                 <input type="number" className="form-control" id="lon" onChange={this.handleLonValueChange} />
                             </div>
+                            <div className="col-md-4 form-group">
+                                <label htmlFor="dim">Dim:</label>
+                                <input 
+                                    type="number" 
+                                    className="form-control" 
+                                    id="dim" 
+                                    onChange={this.handleDimValueChange} 
+                                    value={this.state.dim}
+                                />
+                            </div>
                         </div>
                         <div className="form-group form-check">
                             <label className="form-check-label">
-                                <input className="form-check-input" type="checkbox" onChange={this.handleCloudScoreChange}/> Include Cloud Score
+                                <input 
+                                    className="form-check-input" 
+                                    type="checkbox" 
+                                    onChange={this.handleCloudScoreChange}
+                                />
+                                Include Cloud Score
                             </label>
                         </div>
                         <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Find Image</button>
-                    
                     </div>
                     <div className='col-md-6'>
                         {this.state.assetsSection}
