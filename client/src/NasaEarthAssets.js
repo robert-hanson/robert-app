@@ -1,5 +1,5 @@
 import React from 'react';
-import { NasaEarthAsset } from './NasaEarthAsset';
+// import { NasaEarthAsset } from './NasaEarthAsset';
 
 export class NasaEarthAssets extends React.Component {
     constructor(props){
@@ -26,14 +26,14 @@ export class NasaEarthAssets extends React.Component {
 
         // create jsx element for each asset returned
         const sortedAssets = this.sortAssets(body);
-        const assetElements = sortedAssets.map((asset)=>{
-            return <NasaEarthAsset 
-                    asset={asset} 
-                    lat={this.props.lat} 
-                    lon={this.props.lon} 
-                    // onLoad={}
-                    />
-        });
+        // const assetElements = sortedAssets.map((asset)=>{
+        //     return <NasaEarthAsset 
+        //             asset={asset} 
+        //             lat={this.props.lat} 
+        //             lon={this.props.lon} 
+        //             // onLoad={}
+        //             />
+        // });
 
         // this.setState({
         //     assets: assetElements
@@ -99,12 +99,12 @@ export class NasaEarthAssets extends React.Component {
     }
 
     render(){
-        debugger;
-        let jsxToRender;
-        if (this.state.assets.length > 0)
-        {
-            jsxToRender = this.getAssetsJsx();
-        }
+        // debugger;
+        // let jsxToRender;
+        // if (this.state.assets.length > 0)
+        // {
+        //     jsxToRender = this.getAssetsJsx();
+        // }
 
         return (
             // <div>

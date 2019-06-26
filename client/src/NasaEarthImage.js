@@ -4,53 +4,42 @@ export class NasaEarthImage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            image: null,
             isLoaded: false
         };
 
-        this.loadImage = this.loadImage.bind(this);
         this.handleOnLoad = this.handleOnLoad.bind(this);
     }
 
 
-    componentDidMount = async() => {
-        await this.loadImage();
-    }
-
-    
-    loadImage = async() => {
-        let url = `/nasa/earth/imagery?lat=${this.props.lat}&lon=${this.props.lon}`;
-        if (this.props.cloud_score){
-            url = url + `&cloud_score=${this.props.cloud_score}`;
-        }
-        const response = await fetch(url);
-        const body = await response.json();
-    
-        // client side exception handling
-        if (response.status !== 200) {
-          throw Error(body.message); 
-        }
-
-        this.setState({image: body});
-    }
-
     handleOnLoad(){
         this.setState({isLoaded: true})
         if(this.props.onImageLoad){
-            this.props.onImageLoad(); //callback
+            this.props.onImageLoad(); //parent callback
         }
     }
 
     render(){
+        let jsxToRender;
+        if (this.state.isLoaded){
+            jsxToRender = <img 
+                            className="border"
+                            src={this.props.data.url} 
+                            alt={this.props.alt} 
+                            onLoad={this.handleOnLoad}
+                           />
+        } else { // loading spinner
+            jsxToRender = <span class="spinner-border spinner-border-sm"></span>
+        }
+
+
         return (
-            this.state.image &&
-            <div>
-                <span hidden={this.state.isLoaded} class="spinner-border spinner-border-sm"></span>
+            <div className='text-center'>
+                {this.state.isLoaded || <span class="spinner-border spinner-border-sm"></span>}
                 <img 
                     className="border"
-                    src={this.state.image.url} 
+                    src={this.props.data.url} 
                     alt={this.props.alt} 
-                    onLoad={this.handleOnLoad}  
+                    onLoad={this.handleOnLoad}
                 />
             </div>
         );
@@ -68,3 +57,58 @@ export class NasaEarthImage extends React.Component {
         // );
     }
 }
+
+
+// constructor(props){
+//     super(props);
+//     this.state = {
+//         image: null,
+//         isLoaded: false
+//     };
+
+//     this.loadImage = this.loadImage.bind(this);
+//     this.handleOnLoad = this.handleOnLoad.bind(this);
+// }
+
+
+// componentDidMount = async() => {
+//     await this.loadImage();
+// }
+
+
+// loadImage = async() => {
+//     let url = `/nasa/earth/imagery?lat=${this.props.lat}&lon=${this.props.lon}`;
+//     if (this.props.cloud_score){
+//         url = url + `&cloud_score=${this.props.cloud_score}`;
+//     }
+//     const response = await fetch(url);
+//     const body = await response.json();
+
+//     // client side exception handling
+//     if (response.status !== 200) {
+//       throw Error(body.message); 
+//     }
+
+//     this.setState({image: body});
+// }
+
+// handleOnLoad(){
+//     this.setState({isLoaded: true})
+//     if(this.props.onImageLoad){
+//         this.props.onImageLoad(); //callback
+//     }
+// }
+
+// render(){
+//     return (
+//         this.state.image &&
+//         <div>
+//             <span hidden={this.state.isLoaded} class="spinner-border spinner-border-sm"></span>
+//             <img 
+//                 className="border"
+//                 src={this.state.image.url} 
+//                 alt={this.props.alt} 
+//                 onLoad={this.handleOnLoad}  
+//             />
+//         </div>
+//     );

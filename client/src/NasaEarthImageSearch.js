@@ -11,7 +11,7 @@ export class NasaEarthImageSearch extends React.Component {
             dim: 0.025,         // width and height of image in degrees
             date: null,         // date of image; if not supplied, then the most recent image (i.e., closest to today) is used
             cloud_score: false,  // calculate the percentage of the image covered by clouds
-            searchResult: null, 
+            imageToDisplay: null, 
             isSearching: false,
             assetsSection: null
         };
@@ -21,7 +21,8 @@ export class NasaEarthImageSearch extends React.Component {
         this.handleDimValueChange = this.handleDimValueChange.bind(this);
         this.handleCloudScoreChange = this.handleCloudScoreChange.bind(this);
         this.handleImageSearch = this.handleImageSearch.bind(this);
-        // this.handleImageLoaded = this.handleImageLoaded.bind(this);
+        this.handleSelectionChange = this.handleSelectionChange.bind(this);
+        this.loadImage = this.loadImage.bind(this);
     }
 
     handleLatValueChange(event){
@@ -50,24 +51,17 @@ export class NasaEarthImageSearch extends React.Component {
     handleImageSearch = async() => {
         debugger;
         this.setState({
-            isSearching: true
+            isSearching: true, 
+            imageToDisplay: null
         });
 
         this.setState({assetsSection: <NasaEarthAssets 
                                         lat={this.state.lat} 
                                         lon={this.state.lon} 
-                                        dim={this.state.dim}
-                                        onSelection={(asset)=>{alert("you clicked " + asset.id)}}
+                                        // dim={this.state.dim}
+                                        onSelection={this.handleSelectionChange}
                                     />});
 
-        // let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}`;
-        // const response = await fetch(url);
-        // const body = await response.json();
-    
-        // // client side exception handling
-        // if (response.status !== 200) {
-        //   throw Error(body.message); 
-        // }
 
         // 
         this.setState({
@@ -75,8 +69,31 @@ export class NasaEarthImageSearch extends React.Component {
         });
     }
 
+    handleSelectionChange = async(asset)=>{
+        debugger;
+        this.setState({imageToDisplay: null})
+        await this.loadImage(asset);
+    }
 
+    loadImage = async(asset)=> {
 
+        const date = this.formatDate(asset.date);
+        // date must be in format YYYY-MM-DD
+        let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}&date=${date}`;
+        const response = await fetch(url);
+        const body = await response.json();
+    
+        // client side exception handling
+        if (response.status !== 200) {
+          throw Error(body.message); 
+        }
+
+        this.setState({imageToDisplay: <NasaEarthImage data={body} alt={asset.id} />});
+    }
+
+    formatDate(date){
+        return date.substring(0, date.indexOf('T'));
+    }
 
     // handleImageLoaded(){
     //     this.setState({
@@ -124,6 +141,7 @@ export class NasaEarthImageSearch extends React.Component {
                             </label>
                         </div>
                         <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Find Image</button>
+                        {this.state.imageToDisplay}
                     </div>
                     <div className='col-md-6'>
                         {this.state.assetsSection}
