@@ -1,4 +1,5 @@
 import React from 'react';
+import { NasaEarthAsset } from './NasaEarthAsset';
 
 export class NasaEarthAssets extends React.Component {
     constructor(props){
@@ -22,8 +23,19 @@ export class NasaEarthAssets extends React.Component {
           throw Error(body.message); 
         }
 
+        // create jsx element for each asset returned
+        const sortedAssets = this.sortAssets(body);
+        const assetElements = sortedAssets.map((asset)=>{
+            return <NasaEarthAsset 
+                    asset={asset} 
+                    lat={this.props.lat} 
+                    lon={this.props.lon} 
+                    // onLoad={}
+                    />
+        });
+
         this.setState({
-            assets: this.sortAssets(body)
+            assets: assetElements
         });
     }
 
@@ -54,22 +66,43 @@ export class NasaEarthAssets extends React.Component {
         return sortedAssets;
     }
 
+    getAssetsJsx(){
+        return(
+            <div>
+                {this.state.assets[0]}
+            </div>
+        );
+    }
 
     render(){
+        let jsxToRender;
+        if (this.state.assets.length > 0)
+        {
+            jsxToRender = this.getAssetsJsx();
+        }
 
         return (
             <div>
-                <h3>Assets</h3>
-                <table className='table'>
-                    <thead>
-                        <th>id</th>
-                        <th>date</th>
-                    </thead>
-                    <tbody>
-                        {this.getAssetRows()}
-                    </tbody>
-                </table>
+                {jsxToRender}
             </div>
+
+
+
+            // <div>
+            //     <h3>Assets</h3>
+            //     <table className='table'>
+            //         <thead>
+            //             <th>id</th>
+            //             <th>date</th>
+            //         </thead>
+            //         <tbody>
+            //             {this.getAssetRows()}
+            //         </tbody>
+            //     </table>
+
+            //     <hr/><p>delte this shit...</p>
+            //     {this.state.assets.length>0 && <NasaEarthAsset lat={this.props.lat} lon={this.props.lon} asset={this.state.assets[0]} />}
+            // </div>
         );
     }
 }

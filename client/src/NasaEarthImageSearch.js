@@ -20,7 +20,7 @@ export class NasaEarthImageSearch extends React.Component {
         this.handleLonValueChange = this.handleLonValueChange.bind(this);
         this.handleCloudScoreChange = this.handleCloudScoreChange.bind(this);
         this.handleImageSearch = this.handleImageSearch.bind(this);
-        this.handleImageLoaded = this.handleImageLoaded.bind(this);
+        // this.handleImageLoaded = this.handleImageLoaded.bind(this);
     }
 
     handleLatValueChange(event){
@@ -43,9 +43,11 @@ export class NasaEarthImageSearch extends React.Component {
 
     handleImageSearch = async() => {
         this.setState({
-            isSearching: true, 
-            searchResult: null
+            isSearching: true
         });
+
+        this.setState({assetsSection: <NasaEarthAssets lat={this.state.lat} lon={this.state.lon}/>});
+
         let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}`;
         const response = await fetch(url);
         const body = await response.json();
@@ -57,17 +59,20 @@ export class NasaEarthImageSearch extends React.Component {
 
         // 
         this.setState({
-            searchResult: body
+            isSearching: false
         });
     }
 
-    handleImageLoaded(){
-        this.setState({
-            isSearching: false,
-            assetsSection: <NasaEarthAssets lat={this.state.lat} lon={this.state.lon}/>
-        });
+
+
+
+    // handleImageLoaded(){
+    //     this.setState({
+    //         isSearching: false,
+    //         assetsSection: <NasaEarthAssets lat={this.state.lat} lon={this.state.lon}/>
+    //     });
         
-    }
+    // }
 
     render(){
         return(
@@ -92,14 +97,10 @@ export class NasaEarthImageSearch extends React.Component {
                             </label>
                         </div>
                         <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Find Image</button>
-                        {this.state.assetsSection}
+                    
                     </div>
                     <div className='col-md-6'>
-                        {this.state.searchResult && 
-                            <div className='text-center'>  
-                                <span hidden={this.state.isSearching === false} class="spinner-border spinner-border-sm"></span>
-                                <NasaEarthImage data={this.state.searchResult} onLoad={this.handleImageLoaded} />
-                            </div>}
+                        {this.state.assetsSection}
                     </div>
                 </div>
             </div>
