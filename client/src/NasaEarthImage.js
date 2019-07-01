@@ -19,19 +19,6 @@ export class NasaEarthImage extends React.Component {
     }
 
     render(){
-        let jsxToRender;
-        if (this.state.isLoaded){
-            jsxToRender = <img 
-                            className="border"
-                            src={this.props.data.url} 
-                            alt={this.props.alt} 
-                            onLoad={this.handleOnLoad}
-                           />
-        } else { // loading spinner
-            jsxToRender = <span class="spinner-border spinner-border-sm"></span>
-        }
-
-
         return (
             <div className='text-center'>
                 {this.state.isLoaded || <span class="spinner-border spinner-border-sm"></span>}

@@ -13,7 +13,7 @@ exports.getAstronomyPictureOfTheDay = async() => {
 };
 
 exports.saveNasaApod = async(apod) => {
-    Logger.log('attempting to save NASA APOD...');
+    Logger.log('Attempting to save NASA APOD...');
     const apodAlreadyExists = await doesNasaApodExist(apod);
     if (!apodAlreadyExists)
     {
@@ -49,8 +49,19 @@ exports.getLandsatAssets = async(lat,lon, begin, end) => {
 };
 
 const doesNasaApodExist = async(apod) => {
-    const resultSet = await NasaApod.find(apod);
-    return resultSet.length > 0;
+    Logger.log('Determining if APOD is already archived...');
+    const resultSet = await NasaApod.find({
+        date: apod.date,
+        explanation: apod.explanation,
+        hdurl: apod.hdurl,
+        media_type: apod.media_type,
+        service_version: apod.service_version,
+        title: apod.title,
+        url: apod.url
+    });
+    const apodAlreadyArchived = resultSet.length > 0;
+    Logger.log(`Apod already archived: ${apodAlreadyArchived}`);
+    return apodAlreadyArchived;
 };
 
 
