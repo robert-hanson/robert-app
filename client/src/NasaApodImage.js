@@ -4,37 +4,52 @@ export class NasaApodImage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            data: {
-                url: '#',
-                title: "",
-                explanation: ""
-            }
+            isLoading: false,
+            image: null
         };
-        this.loadImage = this.loadImage.bind(this);
+        this.handleOnLoad = this.handleOnLoad.bind(this);
     }
 
-    componentDidMount = async() => {
-        await this.loadImage();
+    componentDidMount(){
+        this.setState({
+            isLoading: false,
+            image: <img className='img-fluid' 
+                        src={this.props.data.hdurl} 
+                        alt={this.props.data.title} 
+                        onLoad={this.handleOnLoad} 
+                        onError={this.handleOnLoad} 
+                    />
+        });
     }
 
-
-    loadImage = async() => {
-        try {
-            const url = '/nasa/apod';
-            const res = await fetch(url);
-            if (!res.ok){
-                throw Error(res.statusText);
-            }
-            var data = await res.json();
-            this.setState({data: data});
-        } catch(e){
-            console.error(e);
-        }
+    handleOnLoad(){
+        this.setState({
+            isLoading: false
+        })
     }
 
     render(){ 
+        let spinnerJsx = <div className='text-center'>
+                            <span class="spinner-border spinner-border-sm"/>
+                         </div>;
+
+        let imageJsx =  <div>
+                            <div className='offset-md-2 col-md-8'>
+                                {/* {this.props.showTitle && <h3 class='text-center'>{this.state.apodImage.title}</h3>} */}
+                                <h3 className='text-center'>{this.props.data.title}</h3>
+                                {/* <img className='img-fluid' src={this.state.apodImage.hdurl} alt={this.state.apodImage.title} /> */}
+                                <img className='img-fluid' src={this.props.data.hdurl} alt={this.props.data.title} />
+                            </div>
+                            <p className="pt-3 pb-5">{this.props.data.explanation}</p>
+                        </div>;
+
         return (
-            <img className='img-fluid' src={this.state.data.hdurl} alt={this.state.data.title} />
+            <div>
+                {/* Show spinner if loading */}
+                {this.state.isLoading && spinnerJsx}
+                {/* Show image if done loading */}
+                {!this.state.isLoading && imageJsx}
+            </div>
         )
     }
 }

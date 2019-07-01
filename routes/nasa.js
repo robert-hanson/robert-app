@@ -15,6 +15,17 @@ router.get('/apod', async(req, res) => {
         console.error(e);
         res.send(e);
     }
+});
+
+
+router.get('/apods', async(req, res) => {
+    try{
+        const apods = await Nasa.getSavedNasaApods();
+        res.send(apods);
+    } catch(e){
+        console.error(e);
+        res.send(e);
+    }
 })
 
 // router.post('/apod', async(req, res) =>{

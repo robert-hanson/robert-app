@@ -1,46 +1,95 @@
 import React from 'react';
+import { NasaApodImage } from './NasaApodImage';
 
 export class NasaApodPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            apodImage: {
-                url: '#',
-                title: "",
-                explanation: ""
-            }
+            apods: [], 
+            isLoading: false
         };
-        this.loadImage = this.loadImage.bind(this);
+        this.loadImages = this.loadImages.bind(this);
     }
 
     componentDidMount = async() => {
-        await this.loadImage();
+        await this.loadImages();
     }
 
 
-    loadImage = async() => {
+    loadImages = async() => {
+        debugger;
+        let apods = [];
         try {
-            const url = '/nasa/apod';
+            this.setState({
+                isLoading: true
+            });
+            const url = '/nasa/apods';
             const res = await fetch(url);
             if (!res.ok){
                 throw Error(res.statusText);
             }
-            var data = await res.json();
-            this.setState({apodImage: data});
-        } catch(e){
+            apods = await res.json();
+        } catch(e){ 
             console.error(e);
+        } finally {
+            this.setState({
+                isLoading: false,
+                apods: apods
+            });
         }
     }
 
+    getCarouselIndicators(parentElementId){
+        let indicators = [];
+        const dataTargetId = `#${parentElementId}`;
+        for(let i = 0; i < this.state.apods.length; i++){
+            const isActive = i === this.state.apods.length -1;
+            indicators[i] = <li 
+                                data-target={dataTargetId} 
+                                data-slide-to={i} 
+                                className={isActive && "active"}
+                            ></li>;
+        }
+        return indicators;
+    }
+
+    getCarouselItems(parentElementId){
+        debugger;
+        let items = [];
+        for(let i=0; i < this.state.apods.length; i++){
+            const isActive = i === this.state.apods.length - 1;
+            const classNames = `carousel-item ${isActive ? 'active': ''}`;
+            items[i] =  <div className={classNames}>
+                            <NasaApodImage data={this.state.apods[i]} />
+                        </div>
+        }
+        return items;
+    }
+
     render(){ 
+        const carouselId = 'apods';
+
         return (
-            <div>
-                <div className='offset-md-2 col-md-8'>
-                    {/* {this.props.showTitle && <h3 class='text-center'>{this.state.apodImage.title}</h3>} */}
-                    <h3 className='text-center'>{this.state.apodImage.title}</h3>
-                    <img className='img-fluid' src={this.state.apodImage.hdurl} alt={this.state.apodImage.title} />
+            <div id={carouselId} class="carousel slide" data-ride="carousel">
+
+                {/* <!-- Indicators --> */}
+                <ul class="carousel-indicators">
+                    {this.getCarouselIndicators(carouselId)}
+                </ul>
+            
+                {/* <!-- The slideshow --> */}
+                <div class="carousel-inner">
+                    {this.getCarouselItems(carouselId)}
                 </div>
-                <p className="pt-3 pb-5">{this.state.apodImage.explanation}</p>
+            
+                {/* <!-- Left and right controls --> */}
+                <a className="carousel-control-prev" href="#apods" data-slide="prev">
+                    <span className="carousel-control-prev-icon bg-dark"></span>
+                </a>
+                <a class="carousel-control-next" href="#apods" data-slide="next">
+                    <span className="carousel-control-next-icon bg-dark"></span>
+                </a>
+            
             </div>
         )
     }
