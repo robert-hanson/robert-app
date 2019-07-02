@@ -48,8 +48,9 @@ export class NasaEarthImageSearch extends React.Component {
         });
     }
 
-    handleImageSearch = async() => {
+    handleImageSearch = async(event) => {
         debugger;
+        event.preventDefault();
         this.setState({
             isSearching: true, 
             imageToDisplay: null
@@ -106,24 +107,55 @@ export class NasaEarthImageSearch extends React.Component {
     render(){
         return(
             <div>
-                {/* <h2>Earth</h2> */}
+
+                <p className='pt-2'>Search Landsat 8 images of Earth for the supplied location and date</p>
+                <form className="form-inline">
+                    <label for="lat" className="mr-sm-2">Lat:</label>
+                    <input type="number" className="form-control mb-2 mr-sm-2" id="lat" onChange={this.handleLatValueChange}/>
+                    <label for="lon" className="mr-sm-2">Lon:</label>
+                    <input type="number" className="form-control mb-2 mr-sm-2" id="lon" onChange={this.handleLonValueChange} />
+                    <div className="form-check mb-2 mr-sm-2">
+                        <label className="form-check-label">
+                        <input className="form-check-input" type="checkbox" onChange={this.handleCloudScoreChange}/> Include Cloud Score
+                        </label>
+                    </div>
+                    <button type="submit" className="btn btn-primary mb-2" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Submit</button>
+                </form>
+                <hr/>
+
+
+
+
+
+                {/* <h2 className='mt-2'>Earth</h2> */}
                 <div className="row">
-                    <div className='col-md-6'>
-                        <p>Search Landsat 8 images of Earth for the supplied location and date</p>
+                    {/* <div className='col-md-6'>
                         <div className='row'>
                             <div className="col-md-4 form-group">
                                 <label htmlFor="lat">Lat:</label>
-                                <input type="number" className="form-control" id="lat" max="90" min="-90" onChange={this.handleLatValueChange} />
+                                <input 
+                                    type="number" 
+                                    className="form-control-sm" 
+                                    id="lat" 
+                                    // max="90" 
+                                    // min="-90" 
+                                    onChange={this.handleLatValueChange}
+                                />
                             </div>
                             <div className="col-md-4 form-group">
                                 <label htmlFor="lon">Lon:</label>
-                                <input type="number" className="form-control" id="lon" onChange={this.handleLonValueChange} />
+                                <input  
+                                    type="number" 
+                                    className="form-control-sm" 
+                                    id="lon" 
+                                    onChange={this.handleLonValueChange} 
+                                />
                             </div>
                             <div className="col-md-4 form-group">
                                 <label htmlFor="dim">Dim:</label>
                                 <input 
                                     type="number" 
-                                    className="form-control" 
+                                    className="form-control-sm" 
                                     id="dim" 
                                     onChange={this.handleDimValueChange} 
                                     value={this.state.dim}
@@ -142,7 +174,7 @@ export class NasaEarthImageSearch extends React.Component {
                         </div>
                         <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Find Image</button>
                         {this.state.imageToDisplay}
-                    </div>
+                    </div> */}
                     <div className='col-md-6'>
                         {this.state.assetsSection}
                     </div>

@@ -1,56 +1,34 @@
 import React from 'react';
 import {NasaApodPage} from './NasaApodPage';
+import {NasaNavbar} from './NasaNavbar';
 import {NasaEarthImageSearch} from './NasaEarthImageSearch';
 
 export class NasaPage extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            pageToDisplay: <NasaApodPage/>
+        };
+        this.handleNavbarSelectionChange = this.handleNavbarSelectionChange.bind(this);
+    }
+
+    handleNavbarSelectionChange(event){
+        const pageToDisplay = event.target.id;
+        if (pageToDisplay === 'APOD'){
+            this.setState({pageToDisplay: <NasaApodPage />});
+        } else if (pageToDisplay === 'Earth'){
+            this.setState({pageToDisplay: <NasaEarthImageSearch />});
+        }
+    }
 
     render(){
-        
+        const navbarPages = ['APOD', 'Earth']; // navbar pages to show
         return (
             <div>
-
-
-                <h1>Diagnostics</h1>
-                <p>A react based UI to explore NASA's Open API</p>
-
-                <ul className="nav nav-tabs">
-                    <li className="nav-item">
-                        <a className="nav-link active" data-toggle="tab" href="#earth-page">Earth</a>
-                    </li>
-                    {/* <li className="nav-item dropdown">
-                        <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Dropdown</a>
-                        <div className="dropdown-menu">
-                        <a className="dropdown-item" href="#">Link 1</a>
-                        <a className="dropdown-item" href="#">Link 2</a>
-                        <a className="dropdown-item" href="#">Link 3</a>
-                        </div>
-                    </li> */}
-                    <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href="#apod">APOD</a>
-                    </li>
-                    {/* <li className="nav-item">
-                        <a className="nav-link disabled" href="#">Disabled</a>
-                    </li> */}
-                </ul>
-
-
-                {/*  Tab panes  */}
-                <div className="tab-content">
-                    <div className="tab-pane container active" id="earth-page">
-                        <br/>
-                        <NasaEarthImageSearch/>
-                    </div>
-                    <div className="tab-pane container fade" id="apod">
-                        <br/>
-                        <p>NASA's Astronomy Picture of the Day:</p>
-                        <NasaApodPage />
-                    </div>
-                    {/* <div className="tab-pane container fade" id="menu2"></div> */}
+                <NasaNavbar items={navbarPages} onSelectionChange={this.handleNavbarSelectionChange}/>
+                <div className='container'>
+                    {this.state.pageToDisplay}
                 </div>
-
-
-
-                {/* <NasaApod /> */}
             </div>
         );
     }

@@ -63,7 +63,7 @@ exports.getSavedNasaApods = async() => {
 
 exports.getEarthImage = async(lat, lon, dim, date, cloud_score) => {
     // base url (lat/lon required)
-    Logger.log(`fetching earth image for Lat:${lon} Lon:${lon}...`);
+    Logger.log(`fetching earth image for Lat:${lat} Lon:${lon}...`);
     let url = `https://api.nasa.gov/planetary/earth/imagery/?lat=${lat}&lon=${lon}&api_key=${NASA_API_KEY}`;
     if (dim) url += `&dim=${dim}`;
     if (date) url += `&date=${date}`;

@@ -26,18 +26,7 @@ router.get('/apods', async(req, res) => {
         console.error(e);
         res.send(e);
     }
-})
-
-// router.post('/apod', async(req, res) =>{
-//     try{
-//         const picOfTheDay = await Nasa.getAstronomyPictureOfTheDay();
-//         const response = await Nasa.saveNasaApod(picOfTheDay);
-//         res.send(response);
-//     } catch(e){
-//         console.error(e);
-//         res.send(e);
-//     }
-// });
+});
 
 router.get('/earth/imagery', async(req,res) => {
     try {

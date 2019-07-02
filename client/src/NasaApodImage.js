@@ -33,15 +33,37 @@ export class NasaApodImage extends React.Component {
                             <span class="spinner-border spinner-border-sm"/>
                          </div>;
 
-        let imageJsx =  <div>
-                            <div className='offset-md-2 col-md-8'>
-                                {/* {this.props.showTitle && <h3 class='text-center'>{this.state.apodImage.title}</h3>} */}
-                                <h3 className='text-center'>{this.props.data.title}</h3>
-                                {/* <img className='img-fluid' src={this.state.apodImage.hdurl} alt={this.state.apodImage.title} /> */}
-                                <img className='img-fluid' src={this.props.data.hdurl} alt={this.props.data.title} />
-                            </div>
-                            <p className="pt-3 pb-5">{this.props.data.explanation}</p>
+        // let imageJsx =  <div className='text-center offset-md-3 col-md-6'>
+        //                         {/* {this.props.showTitle && <h3 class='text-center'>{this.state.apodImage.title}</h3>} */}
+        //                         <h3 className='text-center'>{this.props.data.title}</h3>
+        //                         {/* <img className='img-fluid' src={this.state.apodImage.hdurl} alt={this.state.apodImage.title} /> */}
+        //                         <img className='img-fluid' src={this.props.data.hdurl} alt={this.props.data.title} />
+        //                         <p className="pb-5 text-sm">
+        //                             <small>
+        //                                 {this.props.data.explanation}
+        //                             </small>
+        //                         </p>
+        //                 </div>;
+
+
+        let imageJsx =  <div className='pt-2'>
+                                <div className='row'>
+                                    <div className='col-sm-9' style={{height: '80vh'}}>
+                                        <img className='img-fluid mh-100' src={this.props.data.hdurl} alt={this.props.data.title} />
+                                    </div>
+                                    <div className='col-sm-3 align-middle' style={{height: '80vh', overflowY: 'scroll'}}>
+                                        <div className='mh-100' style={{}}>
+                                            <h6>{this.props.data.title}</h6>
+                                            <p className="pb-5 text-sm">
+                                                <small>
+                                                    {this.props.data.explanation}
+                                                </small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>;
+
 
         return (
             <div>
