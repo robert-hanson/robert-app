@@ -26,18 +26,7 @@ export class NasaEarthAssets extends React.Component {
 
         // create jsx element for each asset returned
         const sortedAssets = this.sortAssets(body);
-        // const assetElements = sortedAssets.map((asset)=>{
-        //     return <NasaEarthAsset 
-        //             asset={asset} 
-        //             lat={this.props.lat} 
-        //             lon={this.props.lon} 
-        //             // onLoad={}
-        //             />
-        // });
 
-        // this.setState({
-        //     assets: assetElements
-        // });
 
         this.setState({
             assets: sortedAssets
@@ -57,7 +46,7 @@ export class NasaEarthAssets extends React.Component {
                     onClick={this.handleSelectionChange.bind(this, asset)}
                     className={this.state.selectedAsset && this.state.selectedAsset.id === asset.id && "table-primary"}
                 >
-                    <td>{asset.id}</td>
+                    {/* <td>{asset.id}</td> */}
                     <td >
                         {
                             new Date(asset.date).toLocaleDateString("en-US", 
@@ -99,33 +88,21 @@ export class NasaEarthAssets extends React.Component {
     }
 
     render(){
-        // debugger;
-        // let jsxToRender;
-        // if (this.state.assets.length > 0)
-        // {
-        //     jsxToRender = this.getAssetsJsx();
-        // }
 
         return (
-            // <div>
-            //     {jsxToRender}
-            // </div>
 
 
-
-            <div className="overflow-auto">
-                <h4>Assets</h4>
-                <table className='table table-hover table-sm'>
+                <table className='table table-hover table-striped  table-sm text-center'>
                     <thead className='thead-light'>
-                        <th>id</th>
-                        <th>date</th>
+                        <th>Images</th>
+                        {/* <th>date</th> */}
                     </thead>
                     <tbody>
                         {this.getAssetRows()}
                     </tbody>
                 </table>
                 
-            </div>
+
         );
     }
 }

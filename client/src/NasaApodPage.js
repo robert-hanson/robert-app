@@ -44,24 +44,21 @@ export class NasaApodPage extends React.Component {
         const dataTargetId = `#${parentElementId}`;
         for(let i = 0; i < this.state.apods.length; i++){
             const isActive = i === this.state.apods.length -1;
-            const classNames = `bg-dark ${isActive ? 'active': ''}`;
-
             indicators[i] = <li 
                                 data-target={dataTargetId} 
                                 data-slide-to={i} 
-                                className={classNames}
+                                className={isActive && "active"}
                             ></li>;
         }
         return indicators;
     }
 
     getCarouselItems(parentElementId){
-        debugger;
         let items = [];
         for(let i=0; i < this.state.apods.length; i++){
             const isActive = i === this.state.apods.length - 1;
             const classNames = `carousel-item ${isActive ? 'active': ''}`;
-            items[i] =  <div  className={classNames}>
+            items[i] =  <div className={classNames}>
                             <NasaApodImage data={this.state.apods[i]} />
                         </div>
         }
@@ -72,20 +69,20 @@ export class NasaApodPage extends React.Component {
         const carouselId = 'apods';
 
         return (
-            <div>
+            <div className='container-fluid'>
                 <h4 className='text-center'>NASA's Astronomy Pictures of the Day</h4>
-                <div id={carouselId} className="carousel slide" data-ride="carousel">
-    
+                <div id={carouselId} class="carousel slide w-90 pt-2" data-ride="carousel">
+
                     {/* <!-- Indicators --> */}
                     <ul class="carousel-indicators">
                         {this.getCarouselIndicators(carouselId)}
                     </ul>
-                
+
                     {/* <!-- The slideshow --> */}
                     <div class="carousel-inner">
                         {this.getCarouselItems(carouselId)}
-                    </div>
-                
+                    </div> 
+
                     {/* <!-- Left and right controls --> */}
                     <a className="carousel-control-prev" href="#apods" data-slide="prev">
                         <span className="carousel-control-prev-icon bg-dark"></span>
@@ -93,9 +90,8 @@ export class NasaApodPage extends React.Component {
                     <a class="carousel-control-next" href="#apods" data-slide="next">
                         <span className="carousel-control-next-icon bg-dark"></span>
                     </a>
-                
+
                 </div>
-                    
             </div>
         )
     }

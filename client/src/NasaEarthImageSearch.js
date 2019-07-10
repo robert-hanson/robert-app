@@ -13,7 +13,8 @@ export class NasaEarthImageSearch extends React.Component {
             cloud_score: false,  // calculate the percentage of the image covered by clouds
             imageToDisplay: null, 
             isSearching: false,
-            assetsSection: null
+            assetsSection: null,
+            selectedAsset: null
         };
 
         this.handleLatValueChange = this.handleLatValueChange.bind(this);
@@ -37,10 +38,12 @@ export class NasaEarthImageSearch extends React.Component {
         });
     }
 
-    handleDimValueChange(event){
+    handleDimValueChange = async(event) => {
         this.setState({
             dim: event.target.value
-        });
+        }, this.loadImage);
+        // reload image
+        // await this.loadImage();
     }
     handleCloudScoreChange() {
         this.setState({
@@ -72,15 +75,17 @@ export class NasaEarthImageSearch extends React.Component {
 
     handleSelectionChange = async(asset)=>{
         debugger;
-        this.setState({imageToDisplay: null})
-        await this.loadImage(asset);
+        this.setState({
+            imageToDisplay: null, 
+            selectedAsset: asset
+        }, this.loadImage);
     }
 
-    loadImage = async(asset)=> {
-
-        const date = this.formatDate(asset.date);
+    loadImage = async()=> {
+        debugger;
+        const date = this.formatDate(this.state.selectedAsset.date);
         // date must be in format YYYY-MM-DD
-        let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}&date=${date}`;
+        let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}&date=${date}&dim=${this.state.dim}`;
         const response = await fetch(url);
         const body = await response.json();
     
@@ -89,20 +94,13 @@ export class NasaEarthImageSearch extends React.Component {
           throw Error(body.message); 
         }
 
-        this.setState({imageToDisplay: <NasaEarthImage data={body} alt={asset.id} />});
+        this.setState({imageToDisplay: <NasaEarthImage data={body} alt={this.state.selectedAsset.id} />});
     }
 
     formatDate(date){
         return date.substring(0, date.indexOf('T'));
     }
 
-    // handleImageLoaded(){
-    //     this.setState({
-    //         isSearching: false,
-    //         assetsSection: <NasaEarthAssets lat={this.state.lat} lon={this.state.lon}/>
-    //     });
-        
-    // }
 
     render(){
         return(
@@ -119,7 +117,7 @@ export class NasaEarthImageSearch extends React.Component {
                         <input className="form-check-input" type="checkbox" onChange={this.handleCloudScoreChange}/> Include Cloud Score
                         </label>
                     </div>
-                    <button type="submit" className="btn btn-primary mb-2" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Submit</button>
+                    <button type="submit" className="btn btn-primary mb-2" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Search</button>
                 </form>
                 <hr/>
 
@@ -128,7 +126,7 @@ export class NasaEarthImageSearch extends React.Component {
 
 
                 {/* <h2 className='mt-2'>Earth</h2> */}
-                <div className="row">
+                <div className="row" style={{height: '70vh'}}>
                     {/* <div className='col-md-6'>
                         <div className='row'>
                             <div className="col-md-4 form-group">
@@ -172,11 +170,34 @@ export class NasaEarthImageSearch extends React.Component {
                                 Include Cloud Score
                             </label>
                         </div>
-                        <button type="submit" className="btn btn-primary" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Find Image</button>
-                        {this.state.imageToDisplay}
+
                     </div> */}
-                    <div className='col-md-6'>
+                    <div className='col-md-3 mh-100' style={{overflowY: 'scroll'}}>
                         {this.state.assetsSection}
+                    </div>
+                    <div className='mh-100 offset-md-1 col-md-8 '>
+                        <div className='bg-dark'>
+                            {this.state.imageToDisplay}
+                        </div>
+                        {this.state.imageToDisplay && 
+                            <div>
+                                <label htmlFor="dim">Dimension (degrees):</label>
+                                <input 
+                                    type="range" 
+                                    className="form-control" 
+                                    min='0'
+                                    max='1'
+                                    step='0.25'
+                                    // step='0.005'
+                                    id="dim" 
+                                    // onClick={this.handleDimValueChange} 
+                                    // onKeyUp={this.handleDimValueChange} 
+                                    onChange={this.handleDimValueChange} 
+                                    value={this.state.dim}
+                                />
+                                <span>{this.state.dim}</span>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

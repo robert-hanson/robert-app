@@ -24,6 +24,7 @@ export class NasaEarthImage extends React.Component {
                 {this.state.isLoaded || <span class="spinner-border spinner-border-sm"></span>}
                 <img 
                     className="border"
+                    style={{height: '450px', width: '450px'}}
                     src={this.props.data.url} 
                     alt={this.props.alt} 
                     onLoad={this.handleOnLoad}

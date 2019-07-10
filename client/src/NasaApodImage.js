@@ -46,27 +46,28 @@ export class NasaApodImage extends React.Component {
         //                 </div>;
 
 
-        let imageJsx =  <div className='pt-2'>
-                                <div className='row'>
-                                    <div className='col-sm-9' style={{height: '80vh'}}>
-                                        <img className='img-fluid mh-100' src={this.props.data.hdurl} alt={this.props.data.title} />
-                                    </div>
-                                    <div className='col-sm-3 align-middle' style={{height: '80vh', overflowY: 'scroll'}}>
-                                        <div className='mh-100' style={{}}>
-                                            <h6>{this.props.data.title}</h6>
-                                            <p className="pb-5 text-sm">
-                                                <small>
-                                                    {this.props.data.explanation}
-                                                </small>
-                                            </p>
-                                        </div>
-                                    </div>
+        let imageJsx =  <div  className='w-75 mx-auto'>
+                            {/* IMAGE */}
+                            <div className='row' style={{height: '80vh'}}>
+                                <img className='img-fluid mh-100' src={this.props.data.hdurl} alt={this.props.data.title} />
+                                <div className='col align-middle h-100' style={{overflowY: 'scroll'}}>
+                                    <h6>{this.props.data.title}</h6>
+                                    <p className="pb-5 text-sm">
+                                        <small>
+                                            {this.props.data.explanation}
+                                        </small>
+                                    </p>
                                 </div>
+                            </div>
+                            {/* IMAGE TEXT */}
                         </div>;
 
 
+
+
+
         return (
-            <div>
+            <div className='row'>
                 {/* Show spinner if loading */}
                 {this.state.isLoading && spinnerJsx}
                 {/* Show image if done loading */}

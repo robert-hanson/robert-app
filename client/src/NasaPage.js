@@ -26,7 +26,7 @@ export class NasaPage extends React.Component {
         return (
             <div>
                 <NasaNavbar items={navbarPages} onSelectionChange={this.handleNavbarSelectionChange}/>
-                <div className='container'>
+                <div className=''>
                     {this.state.pageToDisplay}
                 </div>
             </div>
