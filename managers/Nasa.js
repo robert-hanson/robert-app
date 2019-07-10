@@ -101,13 +101,7 @@ const getFormattedDate = (dateString)=>{
     const year = date.getFullYear();
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
     const day = (date.getUTCDate()).toString().padStart(2, '0');
-    Logger.log(`Day: ${day}, Month: ${month}, Year:${year}`)
+    Logger.log(`Day: ${day}, Month: ${month}, Year:${year}`);
     const dateFormatted = `${year}-${month}-${day}`;
-    // const formattedDateString = new Date(dateString).toLocaleDateString("en-US", 
-    // {
-    //     month: "2-digit", 
-    //     day:"2-digit",
-    //     year: "numeric"
-    // });
     return dateFormatted;
 }

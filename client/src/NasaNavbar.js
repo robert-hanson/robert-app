@@ -1,21 +1,17 @@
 import React from 'react';
 
 export class NasaNavbar extends React.Component {
-    constructor(props){
-        super(props);
-    }
-
 
     getNavItems(){
         const navItems = this.props.items.map((navBarItem) => {
             return  <li key={navBarItem} className="nav-item">
-                        <a href='javascript:void(0)' 
-                            className="nav-link" 
+                        <button 
+                            className="nav-link btn btn-link btn-sm" 
                             id={navBarItem}
                             onClick={this.props.onSelectionChange}
                         >
                             {navBarItem}
-                        </a>
+                        </button>
                     </li>;
         });
         return navItems;
@@ -24,7 +20,7 @@ export class NasaNavbar extends React.Component {
     render(){
         return (
             <nav className="navbar navbar-expand-md bg-dark navbar-dark">
-                <a className="navbar-brand" href="#">Diagnostics</a>
+                <button className="navbar-brand btn btn-link btn-sm" href="#">Diagnostics</button>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                     <span className="navbar-toggler-icon"></span>
                 </button>

@@ -74,7 +74,6 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     handleSelectionChange = async(asset)=>{
-        debugger;
         this.setState({
             imageToDisplay: null, 
             selectedAsset: asset
@@ -82,7 +81,6 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     loadImage = async()=> {
-        debugger;
         const date = this.formatDate(this.state.selectedAsset.date);
         // date must be in format YYYY-MM-DD
         let url = `/nasa/earth/imagery?lat=${this.state.lat}&lon=${this.state.lon}&cloud_score=${this.state.cloud_score}&date=${date}&dim=${this.state.dim}`;
@@ -104,7 +102,7 @@ export class NasaEarthImageSearch extends React.Component {
 
     render(){
         return(
-            <div>
+            <div className='container'>
 
                 <p className='pt-2'>Search Landsat 8 images of Earth for the supplied location and date</p>
                 <form className="form-inline">
@@ -121,57 +119,8 @@ export class NasaEarthImageSearch extends React.Component {
                 </form>
                 <hr/>
 
-
-
-
-
-                {/* <h2 className='mt-2'>Earth</h2> */}
                 <div className="row" style={{height: '70vh'}}>
-                    {/* <div className='col-md-6'>
-                        <div className='row'>
-                            <div className="col-md-4 form-group">
-                                <label htmlFor="lat">Lat:</label>
-                                <input 
-                                    type="number" 
-                                    className="form-control-sm" 
-                                    id="lat" 
-                                    // max="90" 
-                                    // min="-90" 
-                                    onChange={this.handleLatValueChange}
-                                />
-                            </div>
-                            <div className="col-md-4 form-group">
-                                <label htmlFor="lon">Lon:</label>
-                                <input  
-                                    type="number" 
-                                    className="form-control-sm" 
-                                    id="lon" 
-                                    onChange={this.handleLonValueChange} 
-                                />
-                            </div>
-                            <div className="col-md-4 form-group">
-                                <label htmlFor="dim">Dim:</label>
-                                <input 
-                                    type="number" 
-                                    className="form-control-sm" 
-                                    id="dim" 
-                                    onChange={this.handleDimValueChange} 
-                                    value={this.state.dim}
-                                />
-                            </div>
-                        </div>
-                        <div className="form-group form-check">
-                            <label className="form-check-label">
-                                <input 
-                                    className="form-check-input" 
-                                    type="checkbox" 
-                                    onChange={this.handleCloudScoreChange}
-                                />
-                                Include Cloud Score
-                            </label>
-                        </div>
 
-                    </div> */}
                     <div className='col-md-3 mh-100' style={{overflowY: 'scroll'}}>
                         {this.state.assetsSection}
                     </div>

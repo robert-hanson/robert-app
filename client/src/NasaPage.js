@@ -2,6 +2,7 @@ import React from 'react';
 import {NasaApodPage} from './NasaApodPage';
 import {NasaNavbar} from './NasaNavbar';
 import {NasaEarthImageSearch} from './NasaEarthImageSearch';
+import {NasaAsteroidsPage} from './NasaAsteroidsPage';
 
 export class NasaPage extends React.Component {
     constructor(props){
@@ -18,11 +19,13 @@ export class NasaPage extends React.Component {
             this.setState({pageToDisplay: <NasaApodPage />});
         } else if (pageToDisplay === 'Earth'){
             this.setState({pageToDisplay: <NasaEarthImageSearch />});
+        } else if (pageToDisplay === 'Asteroids'){
+            this.setState({pageToDisplay: <NasaAsteroidsPage />});
         }
     }
 
     render(){
-        const navbarPages = ['APOD', 'Earth']; // navbar pages to show
+        const navbarPages = ['APOD', 'Earth', 'Asteroids']; // navbar pages to show
         return (
             <div>
                 <NasaNavbar items={navbarPages} onSelectionChange={this.handleNavbarSelectionChange}/>
