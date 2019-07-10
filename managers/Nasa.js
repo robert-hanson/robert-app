@@ -79,10 +79,35 @@ exports.getLandsatAssets = async(lat,lon, begin, end) => {
     if (begin) url += `&begin=${begin}`;
     if (end) url += `&end=${end}`;
     const response = await axios.get(url);
-    Logger.log(`Number of assets returned: ${response.data.count}`)
+    Logger.log(`Number of assets returned: ${response.data.count}`);
     return response.data.results;
 };
 
+exports.getAsteroidsByFeed = async(start_date, end_date)=>{
+    Logger.log('Fetching asteriods by feed...');
+    // nasa api expects date strings in (YYYY-MM-DD) format
+    const startDateFormatted = getFormattedDate(start_date);
+    const endDateFormatted = getFormattedDate(end_date);
+    const url = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${startDateFormatted}&end_date=${endDateFormatted}&api_key=${NASA_API_KEY}`;
+    const response = await axios.get(url);
+    Logger.log(`Number of asteroids returned: ${response.data.element_count}`);
+    return response.data.near_earth_objects;
+}
 
 
-
+/* returns datestrings in format (YYYY-MM-DD) */
+const getFormattedDate = (dateString)=>{
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = (date.getUTCDate()).toString().padStart(2, '0');
+    Logger.log(`Day: ${day}, Month: ${month}, Year:${year}`)
+    const dateFormatted = `${year}-${month}-${day}`;
+    // const formattedDateString = new Date(dateString).toLocaleDateString("en-US", 
+    // {
+    //     month: "2-digit", 
+    //     day:"2-digit",
+    //     year: "numeric"
+    // });
+    return dateFormatted;
+}

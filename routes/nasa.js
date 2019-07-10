@@ -5,6 +5,7 @@ var Nasa = require('../managers/Nasa.js');
 const Logger = require('../Logger.js');
 
 
+/******************** APOD ************************/
 router.get('/apod', async(req, res) => {
     try{
         Logger.log('fetching NASA\'s Astrononmy Picture of the Day (APOD)');
@@ -27,6 +28,8 @@ router.get('/apods', async(req, res) => {
         res.send(e);
     }
 });
+
+/******************** EARTH ************************/
 
 router.get('/earth/imagery', async(req,res) => {
     try {
@@ -52,4 +55,24 @@ router.get('/earth/assets', async(req,res) => {
         res.send(response);
     }
 });
+
+
+/******************** Asteroids ************************/
+
+router.get('/asteroids/feed', async(req,res) =>{
+    try {
+        const asteroids = await Nasa.getAsteroidsByFeed(req.query.start_date, req.query.end_date);
+        res.send(asteroids);
+    } catch(exception){
+        Logger.log("there was an error :(");
+        console.error('e: '  + JSON.stringify(exception));
+        let response = {error: exception};
+        res.send(response);
+    }
+});
+
+
+
+
+
 module.exports = router;
