@@ -6,11 +6,13 @@ export class NasaAsteroidsPage extends React.Component {
         this.state = {
             start_date: null,
             end_date: null,
-            results: null
+            results: null,
+            selectedAsteroid: null
         };
         this.handleSearch = this.handleSearch.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
+        this.handleAsteroidSelection = this.handleAsteroidSelection.bind(this);
     }
 
     handleStartDateChange(event){
@@ -40,8 +42,12 @@ export class NasaAsteroidsPage extends React.Component {
           throw Error(body.message); 
         }
 
-        this.setState({results: body});
+        this.setState({results: this.formatResults(body)});
     };
+
+    handleAsteroidSelection(asteroid){
+        this.setState({selectedAsteroid: asteroid});
+    }
 
     render(){
         return(
@@ -53,10 +59,18 @@ export class NasaAsteroidsPage extends React.Component {
                     <input type="date" className="form-control mb-2 mr-sm-2" id="start" onChange={this.handleStartDateChange} />
                     <label for="end" className="mb-2 mr-sm-2">End:</label>
                     <input type="date" className="form-control mb-2 mr-sm-2" id="end" onChange={this.handleEndDateChange}/>
-                    <button type="submit" className="btn btn-primary mb-2" onClick={this.handleSearch}>Submit</button>
+                    <button type="submit" className="btn btn-primary mb-2" onClick={this.handleSearch}>Search</button>
                 </form>
                 <hr/>
-                <div>{JSON.stringify(this.state.results)}</div>
+                {/* results */}
+                <div className='row'>
+                    <div className='col-md-6'>
+                        {this.state.results}
+                    </div>
+                    <div className='col-md-6'>
+                        {JSON.stringify(this.state.selectedAsteroid)}
+                    </div>
+                </div>
             </div>
         );
     }
@@ -71,5 +85,39 @@ export class NasaAsteroidsPage extends React.Component {
         // Logger.log(`Day: ${day}, Month: ${month}, Year:${year}`)
         const dateFormatted = `${year}-${month}-${day}`;
         return dateFormatted;
+    }
+
+    formatResults(resultsObj){
+        debugger;
+        // reformat nasa json results in a way more easy to work with jsx (ie handling the dynamic date string as a key)
+        var formattedResults = [];
+        for (var dateKey in resultsObj) {
+            if (resultsObj.hasOwnProperty(dateKey)) {
+                const asteroidsArray = resultsObj[dateKey];
+                const formattedResultObj = {
+                    date: dateKey,
+                    asteroids: asteroidsArray
+                };
+                formattedResults.push(formattedResultObj)
+            }
+        }
+
+        const jsx = formattedResults.map((result) => 
+            <li key={result.date}>{result.date}
+                {this.getAsteroidsJsx(result.asteroids)}
+            </li> 
+        );
+
+        return <ul>{jsx}</ul>;
+    }
+
+    getAsteroidsJsx(asteroids){
+        debugger;
+        const innerJsx = asteroids.map(asteroid => 
+            <li key={asteroid.id}>
+                <button className='btn btn-link btn-sm' onClick={this.handleAsteroidSelection.bind(this, asteroid)}>{asteroid.name}</button>
+            </li>
+        );
+        return <ul>{innerJsx}</ul>;
     }
 }
