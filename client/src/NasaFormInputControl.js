@@ -3,7 +3,6 @@ import React from 'react'
 export class NasaFormInputControl extends React.Component {
     
     render(){
-        debugger;
         const isValid = typeof(this.props.valid) === 'boolean' ? this.props.valid : true; //default to true
         let inputCss = `form-control mb-2 mr-sm-2`;
         if (!isValid){

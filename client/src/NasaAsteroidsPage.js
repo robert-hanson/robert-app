@@ -32,7 +32,6 @@ export class NasaAsteroidsPage extends React.Component {
     }
 
     handleSearch = async(event) => {
-        debugger;
         event.preventDefault();
         // date must be in format YYYY-MM-DD
         const start = this.getFormattedDate(this.state.start_date);
@@ -102,7 +101,7 @@ export class NasaAsteroidsPage extends React.Component {
         return (
             <div>
                 <h3>{asteroidInfo.name}</h3>
-                {asteroidInfo.is_potentially_hazardous_asteroid &&  <div class="alert alert-danger" role="alert">
+                {asteroidInfo.is_potentially_hazardous_asteroid &&  <div className="alert alert-danger" role="alert">
                                                                         POTENTIALLY HAZARDOUS
                                                                     </div>
                 }
@@ -181,7 +180,6 @@ export class NasaAsteroidsPage extends React.Component {
     }
 
     formatResults(resultsObj){
-        debugger;
         // reformat nasa json results in a way more easy to work with jsx (ie handling the dynamic date string as a key)
         var formattedResults = [];
         for (var dateKey in resultsObj) {
@@ -205,7 +203,6 @@ export class NasaAsteroidsPage extends React.Component {
     }
 
     getAsteroidsJsx(asteroids){
-        debugger;
         const innerJsx = asteroids.map(asteroid => 
             <li key={asteroid.id}>
                 <button className='btn btn-link btn-sm' onClick={this.handleAsteroidSelection.bind(this, asteroid)}>{asteroid.name}</button>

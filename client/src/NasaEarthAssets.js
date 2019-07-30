@@ -34,7 +34,6 @@ export class NasaEarthAssets extends React.Component {
     }
 
     handleSelectionChange(asset, event){
-        debugger;
         this.setState({selectedAsset: asset});
         this.props.onSelection(asset);
     }
@@ -63,7 +62,6 @@ export class NasaEarthAssets extends React.Component {
     
 
     sortAssets(assets){
-        debugger;
         // callback used to sort
          function compareAssets(a, b){
             if (a.date > b.date){

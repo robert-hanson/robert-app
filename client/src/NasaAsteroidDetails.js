@@ -18,7 +18,7 @@ export class NasaAsteroidDetails extends React.Component {
             this.props.asteroid &&
             <div>
                 <h3>{this.props.asteriod.name}</h3>
-                {this.props.asteriod.is_potentially_hazardous_asteroid &&  <div class="alert alert-danger" role="alert">
+                {this.props.asteriod.is_potentially_hazardous_asteroid &&  <div className="alert alert-danger" role="alert">
                                                                         POTENTIALLY HAZARDOUS
                                                                     </div>
                 }

@@ -30,11 +30,11 @@ export class NasaApodImage extends React.Component {
 
     render(){ 
         let spinnerJsx = <div className='text-center'>
-                            <span class="spinner-border spinner-border-sm"/>
+                            <span className="spinner-border spinner-border-sm"/>
                          </div>;
 
         // let imageJsx =  <div className='text-center offset-md-3 col-md-6'>
-        //                         {/* {this.props.showTitle && <h3 class='text-center'>{this.state.apodImage.title}</h3>} */}
+        //                         {/* {this.props.showTitle && <h3 className='text-center'>{this.state.apodImage.title}</h3>} */}
         //                         <h3 className='text-center'>{this.props.data.title}</h3>
         //                         {/* <img className='img-fluid' src={this.state.apodImage.hdurl} alt={this.state.apodImage.title} /> */}
         //                         <img className='img-fluid' src={this.props.data.hdurl} alt={this.props.data.title} />

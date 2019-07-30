@@ -17,7 +17,6 @@ export class NasaApodPage extends React.Component {
 
 
     loadImages = async() => {
-        debugger;
         let apods = [];
         try {
             this.setState({
@@ -71,15 +70,15 @@ export class NasaApodPage extends React.Component {
         return (
             <div className='container-fluid'>
                 <h4 className='text-center'>NASA's Astronomy Pictures of the Day</h4>
-                <div id={carouselId} class="carousel slide w-90 pt-2" data-ride="carousel">
+                <div id={carouselId} className="carousel slide w-90 pt-2" data-ride="carousel">
 
                     {/* <!-- Indicators --> */}
-                    <ul class="carousel-indicators">
+                    <ul className="carousel-indicators">
                         {this.getCarouselIndicators(carouselId)}
                     </ul>
 
                     {/* <!-- The slideshow --> */}
-                    <div class="carousel-inner">
+                    <div className="carousel-inner">
                         {this.getCarouselItems(carouselId)}
                     </div> 
 
@@ -87,7 +86,7 @@ export class NasaApodPage extends React.Component {
                     <a className="carousel-control-prev" href="#apods" data-slide="prev">
                         <span className="carousel-control-prev-icon bg-dark"></span>
                     </a>
-                    <a class="carousel-control-next" href="#apods" data-slide="next">
+                    <a className="carousel-control-next" href="#apods" data-slide="next">
                         <span className="carousel-control-next-icon bg-dark"></span>
                     </a>
 
