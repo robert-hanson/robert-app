@@ -138,17 +138,14 @@ export class TwitterSubscriptionsPage extends React.Component {
         
         {this.state.inEditMode ? (
           <div>
-            <button class='btn btn-link'>Add User</button>
+            <button className='btn btn-link'>Add User</button>
             <br/>
-            {/* <button class='btn btn-primary'  onClick={this.toggleEditMode}>Save</button> */}
-            <button class='btn btn-secondary float-right'  onClick={this.toggleEditMode}>Close</button>
+            <button className='btn btn-secondary float-right'  onClick={this.toggleEditMode}>Close</button>
           </div>
         ) : (
-          <button class='btn btn-link float-right' onClick={this.toggleEditMode}>Edit Subscriptions</button>
+          <button className='btn btn-link float-right' onClick={this.toggleEditMode}>Edit Subscriptions</button>
         )}
-        {/* <Modal show={true} onClose={() => {console.log('no');}}> content </Modal> */}
-        {/* <button class='btn btn-link'>Add</button> */}
-        {/* <button class='btn btn-link float-right'>Refresh</button>       */}
+
       </div>
     );
   }
