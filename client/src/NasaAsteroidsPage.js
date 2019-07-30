@@ -1,4 +1,8 @@
 import React from 'react'
+import DatePicker from "react-datepicker";
+// import {NasaAsteroidDetails} from './NasaAsteroidDetails'
+
+import "react-datepicker/dist/react-datepicker.css";
 
 export class NasaAsteroidsPage extends React.Component {
     constructor(props){
@@ -15,15 +19,15 @@ export class NasaAsteroidsPage extends React.Component {
         this.handleAsteroidSelection = this.handleAsteroidSelection.bind(this);
     }
 
-    handleStartDateChange(event){
+    handleStartDateChange(date){
         this.setState({
-            start_date: event.target.value
+            start_date: date
         });
     }
 
-    handleEndDateChange(event){
+    handleEndDateChange(date){
         this.setState({
-            end_date: event.target.value
+            end_date: date
         });
     }
 
@@ -53,13 +57,23 @@ export class NasaAsteroidsPage extends React.Component {
         return(
             <div className='container'>
                 {/* <h2>Asteroids</h2> */}
-                <p>Search for asteroids</p>
+                <p>Search for assteroids</p>
                 <form className='form-inline'>
-                    <label for="start" className="mb-2 mr-sm-2">Start:</label>
-                    <input type="date" className="form-control mb-2 mr-sm-2" id="start" onChange={this.handleStartDateChange} />
-                    <label for="end" className="mb-2 mr-sm-2">End:</label>
-                    <input type="date" className="form-control mb-2 mr-sm-2" id="end" onChange={this.handleEndDateChange}/>
-                    <button type="submit" className="btn btn-primary mb-2" onClick={this.handleSearch}>Search</button>
+                    <div className='form-group mr-2'>
+                        <label for="start" className="my-auto mr-sm-2">Start:</label>
+                        <DatePicker
+                                selected={this.state.start_date}
+                                onChange={this.handleStartDateChange}
+                        />
+                    </div>
+                    <div className='form-group mr-2'>
+                        <label for="end" className="my-auto mr-sm-2">End:</label>
+                        <DatePicker
+                                selected={this.state.end_date}
+                                onChange={this.handleEndDateChange}
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-sm btn-primary my-auto" onClick={this.handleSearch}>Search</button>
                 </form>
                 <hr/>
                 {/* results */}
@@ -92,7 +106,7 @@ export class NasaAsteroidsPage extends React.Component {
                                                                         POTENTIALLY HAZARDOUS
                                                                     </div>
                 }
-                <a href={asteroidInfo.nasa_jpl_url}>Jet Propulsion Lab</a>
+                <a href={asteroidInfo.nasa_jpl_url} target='_blank'>Jet Propulsion Lab</a>
                 <div>
                     <span>Id:</span>
                     <span>{asteroidInfo.id}</span>
@@ -109,7 +123,7 @@ export class NasaAsteroidsPage extends React.Component {
                     <span>Sentry object:</span>
                     <span>{asteroidInfo.is_sentry_object.toString()}</span>
                 </div>
-                <p>Estimated diamter</p>
+                <p>Estimated diameter</p>
                 <div className='row'>
                     {/* <p>Estimated diameter</p> */}
                     <div className='col-md-3'>
@@ -157,8 +171,7 @@ export class NasaAsteroidsPage extends React.Component {
     }
 
     /* returns datestrings in format (YYYY-MM-DD) */
-     getFormattedDate(dateString) {
-        const date = new Date(dateString);
+     getFormattedDate(date) {
         const year = date.getFullYear();
         const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
         const day = (date.getUTCDate()).toString().padStart(2, '0');

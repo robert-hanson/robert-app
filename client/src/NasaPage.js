@@ -29,7 +29,7 @@ export class NasaPage extends React.Component {
         return (
             <div>
                 <NasaNavbar items={navbarPages} onSelectionChange={this.handleNavbarSelectionChange}/>
-                <div className=''>
+                <div className='mt-2'>
                     {this.state.pageToDisplay}
                 </div>
             </div>

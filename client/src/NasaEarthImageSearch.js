@@ -1,6 +1,7 @@
 import React from 'react';
 import {NasaEarthImage} from './NasaEarthImage';
 import { NasaEarthAssets } from './NasaEarthAssets';
+import { NasaFormInputControl } from './NasaFormInputControl';
 
 export class NasaEarthImageSearch extends React.Component {
     constructor(props){
@@ -52,7 +53,6 @@ export class NasaEarthImageSearch extends React.Component {
     }
 
     handleImageSearch = async(event) => {
-        debugger;
         event.preventDefault();
         this.setState({
             isSearching: true, 
@@ -104,18 +104,24 @@ export class NasaEarthImageSearch extends React.Component {
         return(
             <div className='container'>
 
-                <p className='pt-2'>Search Landsat 8 images of Earth for the supplied location and date</p>
-                <form className="form-inline">
-                    <label for="lat" className="mr-sm-2">Lat:</label>
-                    <input type="number" className="form-control mb-2 mr-sm-2" id="lat" onChange={this.handleLatValueChange}/>
-                    <label for="lon" className="mr-sm-2">Lon:</label>
-                    <input type="number" className="form-control mb-2 mr-sm-2" id="lon" onChange={this.handleLonValueChange} />
+                <p>Search Landsat 8 images of Earth for the supplied location and date</p>
+                <form className="form-inline needs-validation" novalidate>
+                    <NasaFormInputControl label={"Lat:"} onChange={this.handleLatValueChange} id={"lat"}  />
+                    <NasaFormInputControl label={"Lon:"} onChange={this.handleLonValueChange} id={"lon"}  />
                     <div className="form-check mb-2 mr-sm-2">
                         <label className="form-check-label">
-                        <input className="form-check-input" type="checkbox" onChange={this.handleCloudScoreChange}/> Include Cloud Score
+                            <input  className="form-check-input" 
+                                    type="checkbox" 
+                                    onChange={this.handleCloudScoreChange} 
+                            /> Include Cloud Score
                         </label>
                     </div>
-                    <button type="submit" className="btn btn-primary mb-2" onClick={this.handleImageSearch} disabled={this.state.isSearching}>Search</button>
+                    <button type="submit" 
+                            className="btn btn-primary mb-2" 
+                            onClick={this.handleImageSearch} 
+                            disabled={this.isSearchDisabled}
+                            >Search
+                    </button>
                 </form>
                 <hr/>
 
