@@ -56,7 +56,7 @@ export class NasaAsteroidsPage extends React.Component {
         return(
             <div className='container'>
                 {/* <h2>Asteroids</h2> */}
-                <p>Search for assteroids</p>
+                <p>Search for asteroids</p>
                 <form className='form-inline'>
                     <div className='form-group mr-2'>
                         <label for="start" className="my-auto mr-sm-2">Start:</label>
@@ -77,10 +77,10 @@ export class NasaAsteroidsPage extends React.Component {
                 <hr/>
                 {/* results */}
                 <div className='row'>
-                    <div className='col-md-6'>
+                    <div className='col-md-4'>
                         {this.state.results}
                     </div>
-                    <div className='col-md-6'>
+                    <div className='col-md-8'>
                         {this.state.selectedAsteroid && this.renderAsterioidInfo(this.state.selectedAsteroid)}
                     </div>
                 </div>
@@ -92,8 +92,8 @@ export class NasaAsteroidsPage extends React.Component {
         // const diameterUnits = ['kilometers', 'meters', 'miles', 'feet'];
         const estimatedDiameterInfo = asteroidInfo.estimated_diameter;
 
-        const diameterInKilometers = `(${estimatedDiameterInfo.kilometers.estimated_diameter_min}-${estimatedDiameterInfo.kilometers.estimated_diameter_max})`;
-        const diameterInMeters = `(${estimatedDiameterInfo.meters.estimated_diameter_min}-${estimatedDiameterInfo.meters.estimated_diameter_max})`;
+        const diameterInKilometers = `(${estimatedDiameterInfo.kilometers.estimated_diameter_min} - ${estimatedDiameterInfo.kilometers.estimated_diameter_max})`;
+        const diameterInMeters = `${estimatedDiameterInfo.meters.estimated_diameter_min} - ${estimatedDiameterInfo.meters.estimated_diameter_max}`;
         const diameterInMiles = `(${estimatedDiameterInfo.miles.estimated_diameter_min}-${estimatedDiameterInfo.miles.estimated_diameter_max})`;
         const diameterInFeet = `(${estimatedDiameterInfo.feet.estimated_diameter_min}-${estimatedDiameterInfo.feet.estimated_diameter_max})`;
 
@@ -114,57 +114,59 @@ export class NasaAsteroidsPage extends React.Component {
                     <span>Neoreference Id:</span>
                     <span>{asteroidInfo.neo_reference_id}</span>
                 </div>
-                <div>
-                    <span>Absolute Magnitude (h):</span>
-                    <span>{asteroidInfo.absolute_magnitude_h}</span>
-                </div>
-                <div>
-                    <span>Sentry object:</span>
-                    <span>{asteroidInfo.is_sentry_object.toString()}</span>
-                </div>
-                <p>Estimated diameter</p>
                 <div className='row'>
-                    {/* <p>Estimated diameter</p> */}
-                    <div className='col-md-3'>
-                        <p>(km):</p>{diameterInKilometers}
+                    <div className='col-sm-6'>
+                        <dl>
+                            <dt>Absolute Magnitude (h)</dt>
+                            <dd>{asteroidInfo.absolute_magnitude_h}</dd>
+                            
+                            <dt>Sentry Object</dt>
+                            <dd>{asteroidInfo.is_sentry_object.toString()}</dd>
+                            
+                            <dt>Estimated Diameter</dt>
+                            <dd>{diameterInKilometers} (km)</dd>
+                            <dd>{diameterInMeters} (m)</dd>
+                            <dd>{diameterInMiles} (mi)</dd>
+                            <dd>{diameterInFeet} (ft)</dd>
+                            
+                            <dt>Relative velocity</dt>
+                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.kilometers_per_second}(km/s)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.kilometers_per_hour}(km/h)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.miles_per_hour}(mph)</dd>
+                            
+                            <dt>Miss Distance</dt>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.astronomical}(astronomical)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.lunar}(lunar)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.kilometers}(km)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.miles}(miles)</dd>
+
+                            <dt>Oribiting body</dt>
+                            <dd>{asteroidInfo.close_approach_data[0].orbiting_body}</dd>
+                            {/* <!-- end of close approch objects --> */}
+
+                        </dl>
                     </div>
-                    <div className='col-md-3'>
-                        <p>(m):</p>{diameterInMeters}
+                    <div className='col-sm-6'>
+                        <dl>
+                            <dt>Estimated Diameter</dt>
+                            <dd>{diameterInKilometers} (km)</dd>
+                            <dd>{diameterInMeters} (m)</dd>
+                            <dd>{diameterInMiles} (mi)</dd>
+                            <dd>{diameterInFeet} (ft)</dd>
+                            
+                            <dt>Relative velocity</dt>
+                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.kilometers_per_second}(km/s)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.kilometers_per_hour}(km/h)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.miles_per_hour}(mph)</dd>
+                            
+                            <dt>Miss Distance</dt>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.astronomical}(astronomical)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.lunar}(lunar)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.kilometers}(km)</dd>
+                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.miles}(miles)</dd>
+                        </dl>
                     </div>
-                    <div className='col-md-3'>
-                        <p>(mi):</p>{diameterInMiles}
-                    </div>
-                    <div className='col-md-3'>
-                        <p>(ft):</p>{diameterInFeet}
-                    </div>
-                    <dl>
-                        <dt>
-                            Relative velocity
-                        </dt>
-                        <dd>
-                            {asteroidInfo.close_approach_data[0].relative_velocity.kilometers_per_second}(km/s)
-                        </dd>
-                    </dl>
-                    {/* <span>{asteroidInfo.estimated_diameter.kilometers.estimated_diameter_min}</span>
-                    <span>Estimated diameter (m):</span>
-                    <span>{asteroidInfo.estimated_diameter.meters.estimated_diameter_min}</span>
-                    <span>Estimated diameter (mi):</span>
-                    <span>{asteroidInfo.estimated_diameter.miles.estimated_diameter_min}</span>
-                    <span>Estimated diameter (ft):</span>
-                    <span>{asteroidInfo.estimated_diameter.feet.estimated_diameter_min}</span> */}
                 </div>
-                {/* <div>
-                    <span>Estimated diameter (m):</span>
-                    <span>{asteroidInfo.estimated_diameter.meters}</span>
-                </div>
-                <div>
-                    <span>Estimated diameter (mi):</span>
-                    <span>{asteroidInfo.estimated_diameter.miles}</span>
-                </div>
-                <div>
-                    <span>Estimated diameter (ft):</span>
-                    <span>{asteroidInfo.estimated_diameter.feet}</span>
-                </div> */}
             </div>
         );
     }
