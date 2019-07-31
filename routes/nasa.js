@@ -61,7 +61,7 @@ router.get('/earth/assets', async(req,res) => {
 
 router.get('/asteroids/feed', async(req,res) =>{
     try {
-        const asteroids = await Nasa.getAsteroidsByFeed(req.query.start_date, req.query.end_date);
+        const asteroids = await Nasa.getAsteroidsByFeed(req.query.start_date, req.query.end_date, req.query.detailed);
         res.send(asteroids);
     } catch(exception){
         Logger.log("there was an error :(");
