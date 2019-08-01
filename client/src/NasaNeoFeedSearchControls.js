@@ -47,12 +47,14 @@ export class NasaNeoFeedSearchControls extends React.Component {
     render(){
 
         return (
-            <form className='form-inline'>
-                <NasaDatePicker label={"Start"} onChange={this.handleStartDateChange}/>
-                <NasaDatePicker label={"End"} onChange={this.handleEndDateChange}/>
-                <NasaFormCheckbox default={this.state.detailed} onChange={this.handleDetailedChange}/>
-                <SearchButton onClick={this.handleSearch} />
-            </form>
+            <div className='card card-body bg-light'>
+                <form className='form-inline'>
+                    <NasaDatePicker label={"Start"} onChange={this.handleStartDateChange}/>
+                    <NasaDatePicker label={"End"} onChange={this.handleEndDateChange}/>
+                    <NasaFormCheckbox default={this.state.detailed} onChange={this.handleDetailedChange}/>
+                    <SearchButton onClick={this.handleSearch} />
+                </form>
+            </div>
         );
     }
 }

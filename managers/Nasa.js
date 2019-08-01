@@ -100,13 +100,21 @@ exports.getAsteroidsByFeed = async(start_date, end_date, detailed=false)=>{
     return response.data.near_earth_objects;
 }
 
-exports.getAsteroidsByLookup = async(id)=>{
-    Logger.log('Fetching NEOs by lookup...');
+exports.getNeoByLookupAsync = async(id)=>{
+    Logger.log(`Looking up NEO with id (${id})...`);
     const url = `https://api.nasa.gov/neo/rest/v1/neo/${id}?api_key=${NASA_API_KEY}`;
     const response = await axios.get(url);
     return response.data;
 }
 
+/* max page size is 20 */
+exports.getNeosByBrowseAsync = async(page, size)=>{
+    const pageSize
+    Logger.log(`Looking up NEO with id (${id})...`);
+    const url = `https://api.nasa.gov/neo/rest/v1/neo/${id}?api_key=${NASA_API_KEY}`;
+    const response = await axios.get(url);
+    return response.data;
+}
 
 
 /* returns datestrings in format (YYYY-MM-DD) */

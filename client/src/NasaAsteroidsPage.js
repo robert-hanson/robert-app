@@ -4,22 +4,16 @@ import {NasaOrbitalData} from './NasaOrbitalData'
 import {NasaNeoLookupSearchControls} from './NasaNeoLookupSearchControls'
 
 import { NasaNeoFeedSearchControls } from './NasaNeoFeedSearchControls';
+import { NeoFeedSearch } from './nasa/NeoFeedSearch';
+import { NeoLookupSearch } from './nasa/NeoLookupSearch';
 
 export class NasaAsteroidsPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            start_date: null,
-            end_date: null,
-            results: null,
-            selectedAsteroid: null,
-            detailed: true
+            pageToShow: <NasaNeoFeedSearchControls />
         };
         this.handleSearch = this.handleSearch.bind(this);
-        this.handleStartDateChange = this.handleStartDateChange.bind(this);
-        this.handleEndDateChange = this.handleEndDateChange.bind(this);
-        this.handleAsteroidSelection = this.handleAsteroidSelection.bind(this);
-        this.handleDetailedChange = this.handleDetailedChange.bind(this);
     }
 
     handleStartDateChange(date){
@@ -28,17 +22,6 @@ export class NasaAsteroidsPage extends React.Component {
         });
     }
 
-    handleEndDateChange(date){
-        this.setState({
-            end_date: date
-        });
-    }
-
-    handleDetailedChange(event){
-        this.setState({
-            detailed: event.target.val
-        });
-    }
 
     handleSearch = async(state) => {
         // event.preventDefault();
@@ -81,38 +64,13 @@ export class NasaAsteroidsPage extends React.Component {
 
                 {/* <!-- Tab panes --> */}
                 <div className="tab-content pt-2">
-                    <div className="tab-pane container active card card-body bg-light" id="feed">
-                        <NasaNeoFeedSearchControls onSearch={this.handleSearch} />
+                    <div className="tab-pane container active" id="feed">
+                        <NeoFeedSearch/>
                     </div>
-                    <div className="tab-pane container fade card card-body bg-light" id="lookup">
-                        <NasaNeoLookupSearchControls onChange={()=>{}} />
+                    <div className="tab-pane container fade" id="lookup">
+                        <NeoLookupSearch />
                     </div>
                     <div className="tab-pane container fade" id="browse">...</div>
-                </div>
-                {/* <div class='d-flex mt-3'>
-                    <span class='my-auto mr-2'>Search by:</span>
-                    <ul className="nav nav-pills">
-                        <li className="nav-item">
-                            <a className="nav-link active" href="#">Feed</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Lookup</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Browse</a>
-                        </li>
-                    </ul>
-                </div> */}
-
-                {/* <hr/> */}
-                {/* results */}
-                <div className='row'>
-                    <div className='col-md-4'>
-                        {this.state.results}
-                    </div>
-                    <div className='col-md-8'>
-                        {this.state.selectedAsteroid && this.renderAsterioidInfo(this.state.selectedAsteroid)}
-                    </div>
                 </div>
             </div>
         );

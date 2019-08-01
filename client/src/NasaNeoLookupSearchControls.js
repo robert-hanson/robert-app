@@ -9,30 +9,31 @@ export class NasaNeoLookupSearchControls extends React.Component {
         this.state = {
             id: null
         };
-
-        this.handleIdChange = this.handleIdChange.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.handleIdChange = this.handleIdChange.bind(this);
     }
 
-    handleIdChange(id){
+    handleIdChange(event){
         this.setState({
-            id: id
+            id: event.target.value
         });
     }
 
     handleSearch(event){
         event.preventDefault();
-        this.props.onSearch(this.state);
+        this.props.onSearch(this.state.id);
     }
 
 
     render(){
 
         return (
-            <form className='form-inline'>
-                <NasaFormInputControl label={"Id:"} onChange={this.handleIdChange} id={"id"}  />
-                <SearchButton onClick={this.handleSearch} />
-            </form>
+            <div className="card card-body bg-light">
+                <form className='form-inline'>
+                    <NasaFormInputControl onChange={this.handleIdChange} label={"Id:"} id={"id"}  />
+                    <SearchButton onClick={this.handleSearch} />
+                </form>
+            </div>
         );
     }
 }

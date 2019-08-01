@@ -71,6 +71,29 @@ router.get('/asteroids/feed', async(req,res) =>{
     }
 });
 
+router.get('/asteroids/lookup/:neoId', async(req,res) =>{
+    try {
+        const neo = await Nasa.getNeoByLookupAsync(req.params.neoId);
+        res.send(neo);
+    } catch(exception){
+        Logger.log("there was an error :(");
+        console.error('e: '  + JSON.stringify(exception));
+        let response = {error: exception};
+        res.send(response);
+    }
+});
+
+router.get('/neo/browse', async(req, res) => {
+    try {B
+        const neo = await Nasa.browseNeos(req.query.page, req.query.size);
+        res.send(neo);
+    } catch(exception){
+        Logger.log("there was an error :(");
+        console.error('e: '  + JSON.stringify(exception));
+        let response = {error: exception};
+        res.send(response);
+    }
+});
 
 
 

@@ -1,44 +1,22 @@
 import React from 'react'
 
-import {NasaOrbitalData} from './NasaOrbitalData'
-import {NasaNeoLookupSearchControls} from './NasaNeoLookupSearchControls'
+import {NasaOrbitalData} from '../NasaOrbitalData'
+import {NasaNeoLookupSearchControls} from '../NasaNeoLookupSearchControls'
 
-import { NasaNeoFeedSearchControls } from './NasaNeoFeedSearchControls';
+import { NasaNeoFeedSearchControls } from '../NasaNeoFeedSearchControls';
+import { Neo } from './Neo';
 
 export class NeoFeedSearch extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            start_date: null,
-            end_date: null,
             results: null,
-            selectedAsteroid: null,
-            detailed: true
+            selectedAsteroid: null
         };
         this.handleSearch = this.handleSearch.bind(this);
-        this.handleStartDateChange = this.handleStartDateChange.bind(this);
-        this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleAsteroidSelection = this.handleAsteroidSelection.bind(this);
-        this.handleDetailedChange = this.handleDetailedChange.bind(this);
     }
 
-    handleStartDateChange(date){
-        this.setState({
-            start_date: date
-        });
-    }
-
-    handleEndDateChange(date){
-        this.setState({
-            end_date: date
-        });
-    }
-
-    handleDetailedChange(event){
-        this.setState({
-            detailed: event.target.val
-        });
-    }
 
     handleSearch = async(state) => {
         // event.preventDefault();
@@ -63,7 +41,7 @@ export class NeoFeedSearch extends React.Component {
 
     render(){
         return(
-            <div className='container'>
+            <div id='NeoFeedSearchPage'>
                 {/* <h2>Asteroids</h2> */}
                 {/* <p>Search for asteroids</p> */}
                 <NasaNeoFeedSearchControls onSearch={this.handleSearch} />
@@ -74,77 +52,13 @@ export class NeoFeedSearch extends React.Component {
                         {this.state.results}
                     </div>
                     <div className='col-md-8'>
-                        {this.state.selectedAsteroid && this.renderAsterioidInfo(this.state.selectedAsteroid)}
+                        {this.state.selectedAsteroid && <Neo neo={this.state.selectedAsteroid}/>}
                     </div>
                 </div>
             </div>
         );
     }
 
-    renderAsterioidInfo(asteroidInfo){
-        // const diameterUnits = ['kilometers', 'meters', 'miles', 'feet'];
-        const estimatedDiameterInfo = asteroidInfo.estimated_diameter;
-
-        const diameterInKilometers = `${estimatedDiameterInfo.kilometers.estimated_diameter_min} - ${estimatedDiameterInfo.kilometers.estimated_diameter_max}`;
-        const diameterInMeters = `${estimatedDiameterInfo.meters.estimated_diameter_min} - ${estimatedDiameterInfo.meters.estimated_diameter_max}`;
-        const diameterInMiles = `${estimatedDiameterInfo.miles.estimated_diameter_min} - ${estimatedDiameterInfo.miles.estimated_diameter_max}`;
-        const diameterInFeet = `${estimatedDiameterInfo.feet.estimated_diameter_min} - ${estimatedDiameterInfo.feet.estimated_diameter_max}`;
-
-
-        return (
-            <div>
-                <h3 className='text-center'>{asteroidInfo.name}</h3>
-                {asteroidInfo.is_potentially_hazardous_asteroid &&  <div className="alert alert-danger" role="alert">
-                                                                        POTENTIALLY HAZARDOUS
-                                                                    </div>
-                }
-                <div className='row'>
-                    <div className='col-sm-6'>
-                        <dl>
-                            <dt>Id</dt>
-                            <dd>{asteroidInfo.id}</dd>
-
-                            <dt>Neoreference Id</dt>
-                            <dd>{asteroidInfo.neo_reference_id}</dd>
-
-                            <dt>Absolute Magnitude (h)</dt>
-                            <dd>{asteroidInfo.absolute_magnitude_h}</dd>
-                            
-                            <dt>Sentry Object</dt>
-                            <dd>{asteroidInfo.is_sentry_object.toString()}</dd>
-                            
-                            <dt>Oribiting body</dt>
-                            <dd>{asteroidInfo.close_approach_data[0].orbiting_body}</dd>
-                        </dl>
-                        <a href={asteroidInfo.nasa_jpl_url} target='_blank'>View Jet Propulsion Lab</a>
-                    </div>
-                    <div className='col-sm-6'>
-                        <dl>
-                            <dt>Estimated Diameter</dt>
-                            <dd>{diameterInKilometers} (km)</dd>
-                            <dd>{diameterInMeters} (m)</dd>
-                            <dd>{diameterInMiles} (mi)</dd>
-                            <dd>{diameterInFeet} (ft)</dd>
-                            
-                            <dt>Relative velocity</dt>
-                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.kilometers_per_second}(km/s)</dd>
-                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.kilometers_per_hour}(km/h)</dd>
-                            <dd>{asteroidInfo.close_approach_data[0].relative_velocity.miles_per_hour}(mph)</dd>
-                            
-                            <dt>Miss Distance</dt>
-                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.astronomical}(astronomical)</dd>
-                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.lunar}(lunar)</dd>
-                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.kilometers}(km)</dd>
-                            <dd>{asteroidInfo.close_approach_data[0].miss_distance.miles}(miles)</dd>
-                        </dl>
-                    </div>
-                </div>
-                <div className='row'>
-                    <NasaOrbitalData data={asteroidInfo.orbital_data} />
-                </div>
-            </div>
-        );
-    }
 
     /* returns datestrings in format (YYYY-MM-DD) */
      getFormattedDate(date) {
