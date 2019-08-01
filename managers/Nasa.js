@@ -83,8 +83,14 @@ exports.getLandsatAssets = async(lat,lon, begin, end) => {
     return response.data.results;
 };
 
+/*******************************************************
+            ASTEROID/Neo's METHODS
+*******************************************************/
+
+
+
 exports.getAsteroidsByFeed = async(start_date, end_date, detailed=false)=>{
-    Logger.log('Fetching asteriods by feed...');
+    Logger.log('Fetching NEOs by feed...');
     // nasa api expects date strings in (YYYY-MM-DD) format
     const startDateFormatted = getFormattedDate(start_date);
     const endDateFormatted = getFormattedDate(end_date);
@@ -93,6 +99,14 @@ exports.getAsteroidsByFeed = async(start_date, end_date, detailed=false)=>{
     Logger.log(`Number of asteroids returned: ${response.data.element_count}`);
     return response.data.near_earth_objects;
 }
+
+exports.getAsteroidsByLookup = async(id)=>{
+    Logger.log('Fetching NEOs by lookup...');
+    const url = `https://api.nasa.gov/neo/rest/v1/neo/${id}?api_key=${NASA_API_KEY}`;
+    const response = await axios.get(url);
+    return response.data;
+}
+
 
 
 /* returns datestrings in format (YYYY-MM-DD) */

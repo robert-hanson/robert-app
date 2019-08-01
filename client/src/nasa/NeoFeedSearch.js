@@ -5,7 +5,7 @@ import {NasaNeoLookupSearchControls} from './NasaNeoLookupSearchControls'
 
 import { NasaNeoFeedSearchControls } from './NasaNeoFeedSearchControls';
 
-export class NasaAsteroidsPage extends React.Component {
+export class NeoFeedSearch extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -66,44 +66,7 @@ export class NasaAsteroidsPage extends React.Component {
             <div className='container'>
                 {/* <h2>Asteroids</h2> */}
                 {/* <p>Search for asteroids</p> */}
-                {/* <!-- Nav tabs --> */}
-                <ul className="nav nav-tabs">
-                    <li className="nav-item">
-                        <a className="nav-link active" data-toggle="tab" href="#feed">Feed</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href="#lookup">Lookup</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href="#browse">Browse</a>
-                    </li>
-                </ul>
-
-                {/* <!-- Tab panes --> */}
-                <div className="tab-content pt-2">
-                    <div className="tab-pane container active card card-body bg-light" id="feed">
-                        <NasaNeoFeedSearchControls onSearch={this.handleSearch} />
-                    </div>
-                    <div className="tab-pane container fade card card-body bg-light" id="lookup">
-                        <NasaNeoLookupSearchControls onChange={()=>{}} />
-                    </div>
-                    <div className="tab-pane container fade" id="browse">...</div>
-                </div>
-                {/* <div class='d-flex mt-3'>
-                    <span class='my-auto mr-2'>Search by:</span>
-                    <ul className="nav nav-pills">
-                        <li className="nav-item">
-                            <a className="nav-link active" href="#">Feed</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Lookup</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Browse</a>
-                        </li>
-                    </ul>
-                </div> */}
-
+                <NasaNeoFeedSearchControls onSearch={this.handleSearch} />
                 {/* <hr/> */}
                 {/* results */}
                 <div className='row'>

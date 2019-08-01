@@ -3,8 +3,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { NasaDatePicker } from './NasaDatePicker';
 import { NasaFormCheckbox } from './NasaFormCheckbox';
+import { SearchButton } from './buttons/SearchButton';
 
-export class NasaAsteroidsSearchbar extends React.Component {
+export class NasaNeoFeedSearchControls extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -50,7 +51,7 @@ export class NasaAsteroidsSearchbar extends React.Component {
                 <NasaDatePicker label={"Start"} onChange={this.handleStartDateChange}/>
                 <NasaDatePicker label={"End"} onChange={this.handleEndDateChange}/>
                 <NasaFormCheckbox default={this.state.detailed} onChange={this.handleDetailedChange}/>
-                <button type="submit" className="btn btn-sm btn-primary my-auto" onClick={this.handleSearch}>Search</button>
+                <SearchButton onClick={this.handleSearch} />
             </form>
         );
     }
